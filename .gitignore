@@ -1,0 +1,68 @@
+# === Backend (Java/Maven) ===
+target/
+dependency-reduced-pom*.xml
+
+# Package files
+*.jar
+*.war
+*.nar
+*.ear
+
+# Maven wrapper exception (allow wrapper JAR for VS Code usage)
+!.mvn/wrapper/maven-wrapper.jar
+
+# JVM crash logs
+hs_err_pid*
+replay_pid*
+
+# Compiled Java files
+*.class
+
+# === Frontend (React/Node) ===
+node_modules/
+build/
+dist/
+
+# === Shared ===
+# Config files
+*.properties
+!*.properties.example
+
+# Environment files
+.env*
+!.env.example
+
+# Secrets / keys
+*.key
+*.pem
+*.p12
+*.jks
+
+# Docker local overrides
+docker-compose.override.yml
+
+# Log files
+*.log
+
+# === IDE ===
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# VS Code
+.vscode/
+
+# === OS ===
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
