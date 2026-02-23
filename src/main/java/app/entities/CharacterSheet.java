@@ -2,6 +2,7 @@ package app.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
 
 import java.time.LocalDate;
 
@@ -19,8 +20,10 @@ public class CharacterSheet
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(nullable = false)
-    private Long userId; // TODO should this be a User?
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(nullable = false, unique = true)
     private String name;

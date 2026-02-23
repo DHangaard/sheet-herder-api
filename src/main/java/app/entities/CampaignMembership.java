@@ -2,10 +2,12 @@ package app.entities;
 
 import app.enums.CampaignRole;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Setter;
+import lombok.*;
 
+@Getter
+@Setter
+@ToString
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 public class CampaignMembership
 {
@@ -15,11 +17,17 @@ public class CampaignMembership
     @EqualsAndHashCode.Include
     private Long id;
 
-    @Column(nullable = false)
-    private Long userId; // TODO should this be User?
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(nullable = false)
-    private Long campaignId; // TODO should this be Campaign?
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "campaign_id", nullable = false)
+    private Campaign campaign;
+
+    @OneToOne(optional = true)
+    @JoinColumn(name = "character_sheet_id", unique = true)
+    CharacterSheet characterSheet;
 
     @Enumerated(EnumType.STRING)
     private CampaignRole role;
