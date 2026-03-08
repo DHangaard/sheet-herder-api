@@ -20,6 +20,8 @@
         <logback-classic>1.5.27</logback-classic>
         <org.slf4j>2.0.17</org.slf4j>
         <hamcrest>3.0</hamcrest>
+        <jackson.core.version>2.17.2</jackson.core.version>
+        <jackson.datatype.version>2.17.2</jackson.datatype.version>
     </properties>
 
     <dependencies>
@@ -40,6 +42,18 @@
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-hikaricp</artifactId>
             <version>${hibernate-version}</version>
+        </dependency>
+
+        <!--  JACKSON    -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.datatype.version}</version>
         </dependency>
 
         <!--  LOMBOK    -->
@@ -96,7 +110,7 @@
             <scope>test</scope>
         </dependency>
 
-        <!--  Logging   -->
+        <!--  LOGGING   -->
 
         <dependency>
             <groupId>ch.qos.logback</groupId>
