@@ -1,0 +1,17 @@
+package app.dtos;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import java.util.List;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+public record DNDTraitResultDTO(
+        @JsonProperty("count")
+        int count,
+
+        @JsonProperty("results")
+        List<DNDTraitDTO> traits
+)
+{
+}
