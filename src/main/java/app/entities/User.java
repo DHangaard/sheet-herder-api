@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
+@Table(name = "users")
 public class User
 {
     @Id
@@ -28,7 +29,7 @@ public class User
     private LocalDate createdAt;
     private LocalDate updatedAt;
 
-    // Password will be added in the future when authentication is implemented
+    // Password will be added when authentication is implemented
 
     public User(String email, String username)
     {
