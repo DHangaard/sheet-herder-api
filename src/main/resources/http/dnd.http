@@ -19,7 +19,28 @@ GET {{baseURL}}/classes
 GET {{baseURL}}/classes/wizard
 
 ### GET class details (example FIGHTER)
-GET {{baseURL}}/classes/wizard
+GET {{baseURL}}/classes/fighter
 
-### GET ability bonus details (example STRENGTH)
+### GET all ability scores
+GET {{baseURL}}/ability-scores
+
+### GET ability score details (example STRENGTH)
 GET {{baseURL}}/ability-scores/str
+
+### GET all traits
+GET {{baseURL}}/traits
+
+### GET trait details (example DARKVISION)
+GET {{baseURL}}/traits/darkvision
+
+### GET all languages
+GET {{baseURL}}/languages
+
+### GET language details (example Elvish)
+GET {{baseURL}}/languages/elvish
+
+### GET all subraces
+GET {{baseURL}}/subraces
+
+### GET subrace details (example HIGH_ELF)
+GET {{baseURL}}/subraces/high-elf
