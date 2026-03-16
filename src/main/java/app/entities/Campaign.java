@@ -3,7 +3,7 @@ package app.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -26,21 +26,21 @@ public class Campaign
     // private Map<String, String> gameMasterNotes; // TODO Maybe another Key?
     // private Map<String, String> sessionLogs; // TODO Maybe another Key?
 
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     // public Campaign(User gameMaster) { this.gameMaster = gameMaster; }
 
     @PrePersist
     protected void onCreate()
     {
-        this.createdAt = LocalDate.now();
-        this.updatedAt = LocalDate.now();
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
     protected void onUpdate()
     {
-        this.updatedAt = LocalDate.now();
+        this.updatedAt = LocalDateTime.now();
     }
 }
