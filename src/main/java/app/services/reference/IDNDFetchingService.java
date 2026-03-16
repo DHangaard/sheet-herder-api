@@ -1,6 +1,6 @@
-package app.services;
+package app.services.reference;
 
-import app.dtos.*;
+import app.dtos.dnd.*;
 
 import java.util.List;
 

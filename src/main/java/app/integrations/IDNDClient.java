@@ -1,6 +1,6 @@
 package app.integrations;
 
-import app.dtos.*;
+import app.dtos.dnd.*;
 
 public interface IDNDClient
 {
