@@ -1,6 +1,6 @@
-package app.services;
+package app.services.reference;
 
-import app.dtos.*;
+import app.dtos.dnd.*;
 import app.integrations.IDNDClient;
 
 import java.util.ArrayList;
@@ -22,31 +22,37 @@ public class DNDFetchingService implements IDNDFetchingService
     }
 
     @Override
-    public DNDRaceResultDTO fetchAllRaces(){
+    public DNDRaceResultDTO fetchAllRaces()
+    {
         return dndClient.fetchAllRaces(ALL_RACES_URL);
     }
 
     @Override
-    public DNDSubraceResultDTO fetchAllSubraces(){
+    public DNDSubraceResultDTO fetchAllSubraces()
+    {
         return dndClient.fetchAllSubraces(ALL_SUBRACES_URL);
     }
 
     @Override
-    public DNDTraitResultDTO fetchAllTraits(){
+    public DNDTraitResultDTO fetchAllTraits()
+    {
         return dndClient.fetchAllTraits(ALL_TRAITS_URL);
     }
 
     @Override
-    public DNDLanguageResultDTO fetchAllLanguages(){
+    public DNDLanguageResultDTO fetchAllLanguages()
+    {
         return dndClient.fetchAllLanguages(ALL_LANGUAGES_URL);
     }
 
     @Override
-    public List<DNDRaceDetailDTO> fetchAllRacesWithDetails(){
+    public List<DNDRaceDetailDTO> fetchAllRacesWithDetails()
+    {
         DNDRaceResultDTO resultDTO = dndClient.fetchAllRaces(ALL_RACES_URL);
         List<DNDRaceDetailDTO> detailDTOs = new ArrayList<>();
 
-        resultDTO.races().forEach(race -> {
+        resultDTO.races().forEach(race ->
+        {
             String url = String.format(BASE_URL, race.url());
             detailDTOs.add(dndClient.fetchRaceDetails(url));
         });
@@ -54,11 +60,13 @@ public class DNDFetchingService implements IDNDFetchingService
     }
 
     @Override
-    public List<DNDSubraceDetailDTO> fetchAllSubracesWithDetails(){
+    public List<DNDSubraceDetailDTO> fetchAllSubracesWithDetails()
+    {
         DNDSubraceResultDTO resultDTO = dndClient.fetchAllSubraces(ALL_SUBRACES_URL);
         List<DNDSubraceDetailDTO> detailDTOs = new ArrayList<>();
 
-        resultDTO.subraces().forEach(subrace -> {
+        resultDTO.subraces().forEach(subrace ->
+        {
             String url = String.format(BASE_URL, subrace.url());
             detailDTOs.add(dndClient.fetchSubraceDetails(url));
         });
@@ -66,11 +74,13 @@ public class DNDFetchingService implements IDNDFetchingService
     }
 
     @Override
-    public List<DNDTraitDetailDTO> fetchAllTraitsWithDetails(){
+    public List<DNDTraitDetailDTO> fetchAllTraitsWithDetails()
+    {
         DNDTraitResultDTO resultDTO = dndClient.fetchAllTraits(ALL_TRAITS_URL);
         List<DNDTraitDetailDTO> detailDTOs = new ArrayList<>();
 
-        resultDTO.traits().forEach(trait -> {
+        resultDTO.traits().forEach(trait ->
+        {
             String url = String.format(BASE_URL, trait.url());
             detailDTOs.add(dndClient.fetchTraitDetails(url));
         });
@@ -78,11 +88,13 @@ public class DNDFetchingService implements IDNDFetchingService
     }
 
     @Override
-    public List<DNDLanguageDetailDTO> fetchAllLanguagesWithDetails(){
+    public List<DNDLanguageDetailDTO> fetchAllLanguagesWithDetails()
+    {
         DNDLanguageResultDTO resultDTO = dndClient.fetchAllLanguages(ALL_LANGUAGES_URL);
         List<DNDLanguageDetailDTO> detailDTOs = new ArrayList<>();
 
-        resultDTO.languages().forEach(language -> {
+        resultDTO.languages().forEach(language ->
+        {
             String url = String.format(BASE_URL, language.url());
             detailDTOs.add(dndClient.fetchLanguageDetails(url));
         });
