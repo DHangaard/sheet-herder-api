@@ -1,4 +1,4 @@
-package app.dtos;
+package app.dtos.dnd;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -24,7 +24,7 @@ public record DNDSubraceDetailDTO(
         List<DNDAbilityBonusDTO> abilityBonuses,
 
         @JsonProperty("racial_traits")
-        List<DNDTraitDTO> racialTraits,
+        List<DNDTraitDTO> traits,
 
         @JsonProperty("url")
         String url,
