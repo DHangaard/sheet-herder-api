@@ -9,6 +9,7 @@ import lombok.*;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(name = "uk_user_membership_campaign", columnNames = {"user_id", "campaign_id"}))
 public class CampaignMembership
 {
     @Id
@@ -27,8 +28,9 @@ public class CampaignMembership
 
     @OneToOne(optional = true)
     @JoinColumn(name = "character_sheet_id", unique = true)
-    CharacterSheet characterSheet;
+    private CharacterSheet characterSheet;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private CampaignRole role;
 }
