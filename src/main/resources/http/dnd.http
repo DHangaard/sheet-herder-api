@@ -44,3 +44,9 @@ GET {{baseURL}}/subraces
 
 ### GET subrace details (example HIGH_ELF)
 GET {{baseURL}}/subraces/high-elf
+
+### GET all feats
+GET {{baseURL}}/feats
+
+### GET feat details (example GRAPPLER)
+GET {{baseURL}}/feats/grappler
