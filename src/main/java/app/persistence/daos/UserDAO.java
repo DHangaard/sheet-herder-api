@@ -82,9 +82,9 @@ public class UserDAO implements IDAO<User>
             try
             {
                 em.getTransaction().begin();
-                User updatedStudent = em.merge(user);
+                User updatedUser = em.merge(user);
                 em.getTransaction().commit();
-                return updatedStudent;
+                return updatedUser;
             }
             catch (PersistenceException e)
             {
