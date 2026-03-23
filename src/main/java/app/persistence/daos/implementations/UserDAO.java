@@ -1,8 +1,8 @@
-package app.persistence.daos;
+package app.persistence.daos.implementations;
 
-import app.entities.User;
+import app.persistence.entities.domain.User;
 import app.exceptions.DatabaseException;
-import app.persistence.IDAO;
+import app.persistence.daos.interfaces.IDAO;
 import jakarta.persistence.*;
 
 import java.util.List;
