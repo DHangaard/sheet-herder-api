@@ -32,4 +32,4 @@ GET {{url}}/subraces
 GET {{url}}/subraces/id/1
 
 ### GET Subrace by name
-GET {{url}}/subraces/name/high-elf
+GET {{url}}/subraces/name/high%20elf

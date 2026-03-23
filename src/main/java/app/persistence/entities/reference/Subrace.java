@@ -32,7 +32,7 @@ public class Subrace
     @JoinColumn(name = "race_id", nullable = false)
     private Race race;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "subrace_ability_bonuses",
             joinColumns = @JoinColumn(name = "subrace_id")

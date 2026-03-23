@@ -18,8 +18,14 @@ public class ApplicationConfig
             {
                 ctx.status(400).json(e.getMessage());
             });
+            config.routes.exception(Exception.class, (e, ctx) ->
+            {
+               e.printStackTrace();
+               ctx.status(500).json(e.getMessage());
+            });
 
         }).start(port);
+
         return app;
     }
 

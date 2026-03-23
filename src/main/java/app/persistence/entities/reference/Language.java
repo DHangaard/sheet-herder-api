@@ -29,7 +29,7 @@ public class Language
     @Enumerated(EnumType.STRING)
     private LanguageType type;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "language_typical_speakers",
             joinColumns = @JoinColumn(name = "language_id")
