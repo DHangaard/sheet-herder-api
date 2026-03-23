@@ -1,17 +1,16 @@
 package app.services.reference;
 
-import app.dtos.RaceDTO;
-import app.dtos.SubraceDTO;
+import app.dtos.reference.SubraceDTO;
 import app.dtos.dnd.DNDSubraceDetailDTO;
-import app.entities.reference.Race;
-import app.entities.reference.Subrace;
-import app.entities.reference.Trait;
+import app.persistence.entities.reference.Race;
+import app.persistence.entities.reference.Subrace;
+import app.persistence.entities.reference.Trait;
 import app.mappers.DTOMapper;
-import app.persistence.IReferenceDAO;
+import app.persistence.daos.interfaces.IReferenceDAO;
+import app.utils.ContentHashing;
 import app.utils.Validator;
 
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SubraceService implements IReferenceDataService <DNDSubraceDetailDTO, SubraceDTO>
@@ -31,26 +30,53 @@ public class SubraceService implements IReferenceDataService <DNDSubraceDetailDT
     public List<SubraceDTO> persistAll(List<DNDSubraceDetailDTO> dtos)
     {
         Validator.notEmpty(dtos);
-        return dtos.stream()
-                .map(dto -> subraceDAO.create(buildSubrace(dto)))
+
+        Set<String> incomingRaceNames = dtos.stream()
+                .map(dto -> ContentHashing.normalizeLower(dto.race().name()))
+                .filter(name -> !name.isBlank())
+                .collect(Collectors.toSet());
+
+        Set<String> incomingTraitNames = dtos.stream()
+                .flatMap(dto -> dto.traits().stream())
+                .map(trait -> ContentHashing.normalizeLower(trait.name()))
+                .filter(name -> !name.isBlank())
+                .collect(Collectors.toSet());
+
+        Map<String, Race> racesByName = raceDAO.getByNames(incomingRaceNames).stream()
+                .collect(Collectors.toMap(
+                        race -> ContentHashing.normalizeLower(race.getName()),
+                        race -> race
+                ));
+
+        Map<String, Trait> traitsByName = traitDAO.getByNames(incomingTraitNames).stream()
+                .collect(Collectors.toMap(
+                        trait -> ContentHashing.normalizeLower(trait.getName()),
+                        trait -> trait
+                ));
+
+        List<Subrace> subraces = dtos.stream()
+                .map(dto -> buildSubrace(dto, racesByName, traitsByName))
+                .toList();
+
+        return subraceDAO.syncAll(subraces).stream()
                 .map(DTOMapper::subraceToDTO)
                 .toList();
     }
 
     @Override
-    public SubraceDTO getById(Long id)
+    public Optional<SubraceDTO> getById(Long id)
     {
         Validator.validId(id);
         Subrace subrace = subraceDAO.getById(id);
-        return DTOMapper.subraceToDTO(subrace);
+        return Optional.ofNullable(DTOMapper.subraceToDTO(subrace));
     }
 
     @Override
-    public SubraceDTO getByName(String name)
+    public Optional<SubraceDTO> getByName(String name)
     {
         Validator.notBlank(name);
         Subrace subrace = subraceDAO.getByName(name);
-        return DTOMapper.subraceToDTO(subrace);
+        return Optional.ofNullable(DTOMapper.subraceToDTO(subrace));
     }
 
     @Override
@@ -63,44 +89,44 @@ public class SubraceService implements IReferenceDataService <DNDSubraceDetailDT
     }
 
     @Override
-    public SubraceDTO update(DNDSubraceDetailDTO dto)
-    {
-        Validator.notNull(dto);
-        Subrace subrace = subraceDAO.update(buildSubrace(dto));
-        return DTOMapper.subraceToDTO(subrace);
-    }
-
-    @Override
-    public List<SubraceDTO> updateAll(List<DNDSubraceDetailDTO> dtos)
-    {
-        Validator.notEmpty(dtos);
-        return dtos.stream()
-                .map(dto -> subraceDAO.update(buildSubrace(dto)))
-                .map(DTOMapper::subraceToDTO)
-                .toList();
-    }
-
-    @Override
     public Long delete(Long id)
     {
         Validator.validId(id);
         return subraceDAO.delete(id);
     }
 
-    private Subrace buildSubrace(DNDSubraceDetailDTO dto)
+    private Subrace buildSubrace(DNDSubraceDetailDTO dto, Map<String, Race> racesByName, Map<String, Trait> traitsByName)
     {
-        Set<Trait> traits = dto.traits().stream()
-                .map(trait -> traitDAO.getByName(trait.name()))
-                .collect(Collectors.toSet());
+        Race race = racesByName.get(ContentHashing.normalizeLower(dto.race().name()));
+        if (race == null)
+        {
+            throw new IllegalStateException("Race not found while building Subrace: " + dto.race().name());
+        }
 
-        Race race = raceDAO.getByName(dto.race().name());
+        Set<Trait> traits = dto.traits().stream()
+                .map(trait -> ContentHashing.normalizeLower(trait.name()))
+                .map(traitsByName::get)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toSet());
 
         return new Subrace(
                 dto.name(),
                 dto.description(),
                 race,
                 DTOMapper.toAbilityBonusMap(dto.abilityBonuses()),
-                traits
+                traits,
+                ContentHashing.sha256Hex(buildSubraceHashMaterial(dto, race, traits))
+        );
+    }
+
+    private String buildSubraceHashMaterial(DNDSubraceDetailDTO dto, Race race, Set<Trait> traits)
+    {
+        return String.join("|",
+                ContentHashing.normalizeLower(dto.name()),
+                ContentHashing.normalize(dto.description()),
+                ContentHashing.normalizeLower(race.getName()),
+                ContentHashing.joinSortedEnumMap(DTOMapper.toAbilityBonusMap(dto.abilityBonuses())),
+                ContentHashing.joinSortedMapped(traits, Trait::getName)
         );
     }
 }

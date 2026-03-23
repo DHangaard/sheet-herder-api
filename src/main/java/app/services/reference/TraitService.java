@@ -1,14 +1,15 @@
 package app.services.reference;
 
-import app.dtos.TraitDTO;
+import app.dtos.reference.TraitDTO;
 import app.dtos.dnd.DNDTraitDetailDTO;
-import app.entities.reference.Trait;
+import app.persistence.entities.reference.Trait;
 import app.mappers.DTOMapper;
-import app.persistence.IReferenceDAO;
+import app.persistence.daos.interfaces.IReferenceDAO;
+import app.utils.ContentHashing;
 import app.utils.Validator;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class TraitService implements IReferenceDataService<DNDTraitDetailDTO, TraitDTO>
 {
@@ -23,26 +24,29 @@ public class TraitService implements IReferenceDataService<DNDTraitDetailDTO, Tr
     public List<TraitDTO> persistAll(List<DNDTraitDetailDTO> dtos)
     {
         Validator.notEmpty(dtos);
-        return dtos.stream()
-                .map(dto -> traitDAO.create(buildTrait(dto)))
+        List<Trait> traits = dtos.stream()
+                .map(this::buildTrait)
+                .toList();
+
+        return traitDAO.syncAll(traits).stream()
                 .map(DTOMapper::traitToDTO)
                 .toList();
     }
 
     @Override
-    public TraitDTO getById(Long id)
+    public Optional<TraitDTO> getById(Long id)
     {
         Validator.validId(id);
         Trait trait = traitDAO.getById(id);
-        return DTOMapper.traitToDTO(trait);
+        return Optional.ofNullable(DTOMapper.traitToDTO(trait));
     }
 
     @Override
-    public TraitDTO getByName(String name)
+    public Optional<TraitDTO> getByName(String name)
     {
         Validator.notBlank(name);
         Trait trait = traitDAO.getByName(name);
-        return DTOMapper.traitToDTO(trait);
+        return Optional.ofNullable(DTOMapper.traitToDTO(trait));
     }
 
     @Override
@@ -50,24 +54,6 @@ public class TraitService implements IReferenceDataService<DNDTraitDetailDTO, Tr
     {
         return traitDAO.getAll()
                 .stream()
-                .map(DTOMapper::traitToDTO)
-                .toList();
-    }
-
-    @Override
-    public TraitDTO update(DNDTraitDetailDTO dto)
-    {
-        Validator.notNull(dto);
-        Trait trait = traitDAO.update(buildTrait(dto));
-        return DTOMapper.traitToDTO(trait);
-    }
-
-    @Override
-    public List<TraitDTO> updateAll(List<DNDTraitDetailDTO> dtos)
-    {
-        Validator.notEmpty(dtos);
-        return dtos.stream()
-                .map(dto -> traitDAO.update(buildTrait(dto)))
                 .map(DTOMapper::traitToDTO)
                 .toList();
     }
@@ -83,7 +69,16 @@ public class TraitService implements IReferenceDataService<DNDTraitDetailDTO, Tr
     {
         return new Trait(
                 dto.name(),
-                dto.descriptions()
+                dto.descriptions(),
+                ContentHashing.sha256Hex(buildHashMaterial(dto))
+        );
+    }
+
+    private String buildHashMaterial(DNDTraitDetailDTO dto)
+    {
+        return String.join("|",
+                ContentHashing.normalizeLower(dto.name()),
+                ContentHashing.joinSorted(dto.descriptions())
         );
     }
 }

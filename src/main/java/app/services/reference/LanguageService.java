@@ -1,15 +1,16 @@
 package app.services.reference;
 
-import app.dtos.LanguageDTO;
+import app.dtos.reference.LanguageDTO;
 import app.dtos.dnd.DNDLanguageDetailDTO;
-import app.entities.reference.Language;
+import app.persistence.entities.reference.Language;
 import app.enums.LanguageType;
 import app.mappers.DTOMapper;
-import app.persistence.IDAO;
-import app.persistence.IReferenceDAO;
+import app.persistence.daos.interfaces.IReferenceDAO;
+import app.utils.ContentHashing;
 import app.utils.Validator;
 
 import java.util.List;
+import java.util.Optional;
 
 public class LanguageService implements IReferenceDataService<DNDLanguageDetailDTO, LanguageDTO>
 {
@@ -24,26 +25,29 @@ public class LanguageService implements IReferenceDataService<DNDLanguageDetailD
     public List<LanguageDTO> persistAll(List<DNDLanguageDetailDTO> dtos)
     {
         Validator.notEmpty(dtos);
-        return dtos.stream()
-                .map(dto -> languageDAO.create(buildLanguage(dto)))
+        List<Language> languages = dtos.stream()
+                .map(this::buildLanguage)
+                .toList();
+
+        return languageDAO.syncAll(languages).stream()
                 .map(DTOMapper::languageToDTO)
                 .toList();
     }
 
     @Override
-    public LanguageDTO getById(Long id)
+    public Optional<LanguageDTO> getById(Long id)
     {
         Validator.validId(id);
         Language language = languageDAO.getById(id);
-        return DTOMapper.languageToDTO(language);
+        return Optional.ofNullable(DTOMapper.languageToDTO(language));
     }
 
     @Override
-    public LanguageDTO getByName(String name)
+    public Optional<LanguageDTO> getByName(String name)
     {
         Validator.notBlank(name);
         Language language = languageDAO.getByName(name);
-        return DTOMapper.languageToDTO(language);
+        return Optional.ofNullable(DTOMapper.languageToDTO(language));
     }
 
     @Override
@@ -51,24 +55,6 @@ public class LanguageService implements IReferenceDataService<DNDLanguageDetailD
     {
         return languageDAO.getAll()
                 .stream()
-                .map(DTOMapper::languageToDTO)
-                .toList();
-    }
-
-    @Override
-    public LanguageDTO update(DNDLanguageDetailDTO dto)
-    {
-        Validator.notNull(dto);
-        Language language = languageDAO.update(buildLanguage(dto));
-        return DTOMapper.languageToDTO(language);
-    }
-
-    @Override
-    public List<LanguageDTO> updateAll(List<DNDLanguageDetailDTO> dtos)
-    {
-        Validator.notEmpty(dtos);
-        return dtos.stream()
-                .map(dto -> languageDAO.update(buildLanguage(dto)))
                 .map(DTOMapper::languageToDTO)
                 .toList();
     }
@@ -87,7 +73,19 @@ public class LanguageService implements IReferenceDataService<DNDLanguageDetailD
                 dto.description(),
                 LanguageType.fromValue(dto.type()),
                 dto.typicalSpeakers(),
-                dto.script()
+                dto.script(),
+                ContentHashing.sha256Hex(buildHashMaterial(dto))
+        );
+    }
+
+    private String buildHashMaterial(DNDLanguageDetailDTO dto)
+    {
+        return String.join("|",
+                ContentHashing.normalizeLower(dto.name()),
+                ContentHashing.normalize(dto.description()),
+                ContentHashing.normalize(LanguageType.fromValue(dto.type()).name()),
+                ContentHashing.joinSorted(dto.typicalSpeakers()),
+                ContentHashing.normalize(dto.script())
         );
     }
 }
