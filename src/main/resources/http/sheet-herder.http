@@ -1,0 +1,35 @@
+### GET All languages
+GET {{url}}/languages
+
+### GET Language by id
+GET {{url}}/languages/id/1
+
+### GET Language by name
+GET {{url}}/languages/name/common
+
+### GET All traits
+GET {{url}}/traits
+
+### GET Trait by id
+GET {{url}}/traits/id/1
+
+### GET Trait by name
+GET {{url}}/traits/name/darkvision
+
+### GET All races
+GET {{url}}/races
+
+### GET Race by id
+GET {{url}}/races/id/1
+
+### GET Race by name
+GET {{url}}/races/name/Human
+
+### GET All subraces
+GET {{url}}/subraces
+
+### GET Subrace by id
+GET {{url}}/subraces/id/1
+
+### GET Subrace by name
+GET {{url}}/subraces/name/high-elf
