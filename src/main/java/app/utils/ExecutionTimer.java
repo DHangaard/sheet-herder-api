@@ -1,8 +1,10 @@
 package app.utils;
 
-public class ExecutionTimer
+public final class ExecutionTimer
 {
     private static long start;
+
+    private ExecutionTimer() {}
 
     public static void start()
     {
