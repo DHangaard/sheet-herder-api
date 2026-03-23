@@ -1,0 +1,24 @@
+### Test connection
+GET {{url}}/msg
+
+### Register user
+POST {{url}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "John Admin",
+  "password": "password1234"
+}
+
+### Login
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "John Admin",
+  "password": "password1234"
+}
+
+###
+GET {{url}}/auth/protected
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJESGFuZ2FhcmQiLCJzdWIiOiJKb2huIEFkbWluIiwiZXhwIjoxNzczOTIwODQzLCJyb2xlcyI6InVzZXIiLCJ1c2VybmFtZSI6IkpvaG4gQWRtaW4ifQ.bj4PxnE9IIdtpxL_fAcESdVpanpwygz6YayB-zK5X-g
