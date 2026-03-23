@@ -12,21 +12,58 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <lombok.version>1.18.42</lombok.version>
-        <hibernate-version>7.2.3.Final</hibernate-version>
-        <junit.version>6.0.2</junit.version>
+
+        <!-- Javalin -->
+        <javalin.version>7.0.1</javalin.version>
+
+        <!-- Jackson -->
+        <jackson.version>2.21.1</jackson.version>
+
+        <!-- Database -->
         <postgres.version>42.7.7</postgres.version>
+        <hibernate.version>7.2.3.Final</hibernate.version>
+
+        <!-- Security -->
+        <jbcrypt.version>0.4</jbcrypt.version>
+
+        <!-- Lombok -->
+        <lombok.version>1.18.42</lombok.version>
+
+        <!-- Logging -->
+        <slf4j.version>2.0.17</slf4j.version>
+        <logback.version>1.5.27</logback.version>
+
+        <!-- Testing -->
+        <junit.version>6.0.2</junit.version>
+        <hamcrest.version>3.0</hamcrest.version>
+        <rest-assured.version>5.5.7</rest-assured.version>
+
+        <!-- Testcontainers -->
         <testcontainers.version>2.0.3</testcontainers.version>
-        <logback-classic>1.5.27</logback-classic>
-        <org.slf4j>2.0.17</org.slf4j>
-        <hamcrest>3.0</hamcrest>
-        <jackson.core.version>2.17.2</jackson.core.version>
-        <jackson.datatype.version>2.17.2</jackson.datatype.version>
     </properties>
 
     <dependencies>
 
-        <!--  DB    -->
+        <!-- ===== JAVALIN ===== -->
+        <dependency>
+            <groupId>io.javalin</groupId>
+            <artifactId>javalin</artifactId>
+            <version>${javalin.version}</version>
+        </dependency>
+
+        <!-- ===== JACKSON ===== -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <!-- ===== DATABASE ===== -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
@@ -35,28 +72,22 @@
         <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>${hibernate-version}</version>
+            <version>${hibernate.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-hikaricp</artifactId>
-            <version>${hibernate-version}</version>
+            <version>${hibernate.version}</version>
         </dependency>
 
-        <!--  JACKSON    -->
+        <!-- ===== SECURITY ===== -->
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-            <version>${jackson.core.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>${jackson.datatype.version}</version>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>${jbcrypt.version}</version>
         </dependency>
 
-        <!--  LOMBOK    -->
+        <!-- ===== LOMBOK ===== -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
@@ -64,28 +95,51 @@
             <scope>provided</scope>
         </dependency>
 
-        <!--  TESTING      -->
+        <!-- ===== LOGGING ===== -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <!-- ===== TESTING ===== -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-params</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest</artifactId>
+            <version>${hamcrest.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>${rest-assured.version}</version>
+            <scope>test</scope>
+        </dependency>
 
+        <!-- ===== TESTCONTAINERS ===== -->
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
@@ -102,6 +156,7 @@
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers-jdbc</artifactId>
             <version>${testcontainers.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
@@ -110,18 +165,6 @@
             <scope>test</scope>
         </dependency>
 
-        <!--  LOGGING   -->
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>${logback-classic}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${org.slf4j}</version>
-        </dependency>
     </dependencies>
 
 </project>
