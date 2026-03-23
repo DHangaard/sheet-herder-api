@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class Utils {
+public final class Utils {
+
+    private Utils() {}
 
     public static String getPropertyValue(String propName, String resourceName)  {
         try (InputStream is = Utils.class.getClassLoader().getResourceAsStream(resourceName)) {
@@ -16,7 +18,7 @@ public class Utils {
 
             String value = prop.getProperty(propName);
             if (value != null) {
-                return value.trim();  // Trim whitespace
+                return value.trim();
             } else {
                 throw new ApiException(500, String.format("Property %s not found in %s", propName, resourceName));
             }

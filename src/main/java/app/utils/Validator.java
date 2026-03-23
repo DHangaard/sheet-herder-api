@@ -2,8 +2,11 @@ package app.utils;
 
 import java.util.List;
 
-public class Validator
+public final class Validator
 {
+
+    private Validator() {}
+
     public static <T> void notNull(T object)
     {
         if (object == null)
