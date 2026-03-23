@@ -1,14 +1,14 @@
 package app.mappers;
 
-import app.dtos.LanguageDTO;
-import app.dtos.RaceDTO;
-import app.dtos.SubraceDTO;
-import app.dtos.TraitDTO;
+import app.dtos.reference.LanguageDTO;
+import app.dtos.reference.RaceDTO;
+import app.dtos.reference.SubraceDTO;
+import app.dtos.reference.TraitDTO;
 import app.dtos.dnd.DNDAbilityBonusDTO;
-import app.entities.reference.Language;
-import app.entities.reference.Race;
-import app.entities.reference.Subrace;
-import app.entities.reference.Trait;
+import app.persistence.entities.reference.Language;
+import app.persistence.entities.reference.Race;
+import app.persistence.entities.reference.Subrace;
+import app.persistence.entities.reference.Trait;
 import app.enums.Ability;
 
 import java.util.List;

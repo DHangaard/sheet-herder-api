@@ -1,13 +1,13 @@
 package app.config;
 
-import app.entities.Campaign;
-import app.entities.CampaignMembership;
-import app.entities.CharacterSheet;
-import app.entities.User;
-import app.entities.reference.Language;
-import app.entities.reference.Race;
-import app.entities.reference.Subrace;
-import app.entities.reference.Trait;
+import app.persistence.entities.domain.Campaign;
+import app.persistence.entities.domain.CampaignMembership;
+import app.persistence.entities.domain.CharacterSheet;
+import app.persistence.entities.domain.User;
+import app.persistence.entities.reference.Language;
+import app.persistence.entities.reference.Race;
+import app.persistence.entities.reference.Subrace;
+import app.persistence.entities.reference.Trait;
 import org.hibernate.cfg.Configuration;
 
 final class EntityRegistry {
