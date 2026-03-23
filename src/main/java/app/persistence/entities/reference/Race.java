@@ -28,7 +28,7 @@ public class Race
 
     private int speed;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "race_ability_bonuses",
             joinColumns = @JoinColumn(name = "race_id")

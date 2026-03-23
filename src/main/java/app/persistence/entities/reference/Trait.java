@@ -23,7 +23,7 @@ public class Trait
     @Column(nullable = false, unique = true)
     private String name;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "trait_descriptions",
             joinColumns = @JoinColumn(name = "trait_id")
