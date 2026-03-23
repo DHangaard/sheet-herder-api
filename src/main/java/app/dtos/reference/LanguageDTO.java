@@ -1,4 +1,4 @@
-package app.dtos;
+package app.dtos.reference;
 
 import app.enums.LanguageType;
 
