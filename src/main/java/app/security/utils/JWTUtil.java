@@ -1,0 +1,75 @@
+package app.security.utils;
+
+import app.security.dtos.UserDTO;
+import app.security.enums.Role;
+import com.nimbusds.jose.*;
+import com.nimbusds.jose.crypto.MACSigner;
+import com.nimbusds.jose.crypto.MACVerifier;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
+
+import java.text.ParseException;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+public class JWTUtil {
+
+    private static final String ISSUER = System.getenv("JWT_ISSUER");
+    private static final String SECRET = System.getenv("JWT_SECRET");
+    private static final int EXPIRY = 1000 * 60 * 30; // 30 minutes
+    private static final JWSSigner SIGNER;
+    private static final JWSVerifier VERIFIER;
+
+    static {
+        if (SECRET == null || SECRET.length() < 32)
+            throw new ExceptionInInitializerError("JWT_SECRET must be at least 32 characters");
+        try {
+            SIGNER   = new MACSigner(SECRET);
+            VERIFIER = new MACVerifier(SECRET);
+        } catch (JOSEException e) {
+            throw new ExceptionInInitializerError(e);
+        }
+    }
+
+    private JWTUtil() {}
+
+    public static String createToken(String username, Set<Role> roles) throws JOSEException {
+        JWTClaimsSet claims = new JWTClaimsSet.Builder()
+                .subject(username)
+                .issuer(ISSUER)
+                .issueTime(new Date())
+                .claim("roles", roles.stream()
+                        .map(Role::name)
+                        .collect(Collectors.toList()))
+                .expirationTime(new Date(System.currentTimeMillis() + EXPIRY))
+                .build();
+
+        SignedJWT jwt = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claims);
+        jwt.sign(SIGNER);
+
+        return jwt.serialize();
+    }
+
+    public static UserDTO parseToken(String token) throws ParseException, JOSEException {
+        SignedJWT jwt = SignedJWT.parse(token);
+        if (!jwt.verify(VERIFIER))
+        {
+            throw new JOSEException("Invalid token signature");
+        }
+
+        JWTClaimsSet claims = jwt.getJWTClaimsSet();
+        if (claims.getExpirationTime().before(new Date()))
+        {
+            throw new JOSEException("Token expired");
+        }
+
+        Set<Role> roles = new HashSet<>(claims.getStringListClaim("roles"))
+                .stream()
+                .map(Role::valueOf)
+                .collect(Collectors.toSet());
+
+        return new UserDTO(claims.getSubject(), roles);
+    }
+}
