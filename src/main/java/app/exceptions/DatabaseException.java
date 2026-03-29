@@ -1,14 +1,16 @@
 package app.exceptions;
 
-public class DatabaseException extends RuntimeException
+import io.javalin.http.HttpStatus;
+
+public class DatabaseException extends ApiException
 {
-    public DatabaseException(String msg)
+    public DatabaseException(String message)
     {
-        super(msg);
+        super(HttpStatus.INTERNAL_SERVER_ERROR.getCode(), message);
     }
 
-    public DatabaseException(String msg, Throwable cause)
+    public DatabaseException(String message, Throwable cause)
     {
-        super(msg, cause);
+        super(HttpStatus.INTERNAL_SERVER_ERROR.getCode(), message, cause);
     }
 }
