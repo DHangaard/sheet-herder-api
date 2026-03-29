@@ -1,5 +1,7 @@
 package app.utils;
 
+import app.security.exceptions.ValidationException;
+
 import java.util.List;
 
 public final class Validator
@@ -11,15 +13,15 @@ public final class Validator
     {
         if (object == null)
         {
-            throw new IllegalArgumentException("Input cannot be null");
+            throw new ValidationException("Input cannot be null");
         }
     }
 
-    public static void notBlank(String value)
+    public static void notNullOrBlank(String value)
     {
-        if (value == null || value.isEmpty())
+        if (value == null || value.isBlank())
         {
-            throw new IllegalArgumentException("String cannot be null or blank");
+            throw new ValidationException("String cannot be null or blank");
         }
     }
 
@@ -27,7 +29,7 @@ public final class Validator
     {
         if (objects == null || objects.isEmpty())
         {
-            throw new IllegalArgumentException("List cannot be null or empty");
+            throw new ValidationException("List cannot be null or empty");
         }
     }
 
@@ -35,7 +37,54 @@ public final class Validator
     {
         if (id == null || id <= 0)
         {
-            throw new IllegalArgumentException("Invalid ID");
+            throw new ValidationException("Invalid ID");
+        }
+    }
+
+    public static void validEmail(String email)
+    {
+        if (email == null || email.isBlank())
+        {
+            throw new ValidationException("Email cannot be blank");
+        }
+
+        if (!email.trim().toLowerCase().matches("^[a-z\\d._%+\\-]+@[a-z\\d.\\-]+\\.[a-z]{2,}$"))
+        {
+            throw new ValidationException("Invalid email format");
+        }
+    }
+
+    // TODO Add blocklist of profanity words
+    public static void validUsername(String username)
+    {
+        if (username == null || username.isBlank())
+        {
+            throw new ValidationException("Username cannot be blank");
+        }
+
+        String trimmed = username.trim();
+
+        if (trimmed.length() < 3)
+        {
+            throw new ValidationException("Username must be at least 3 characters");
+        }
+
+        if (!trimmed.matches("^[a-zA-Z\\d_\\-]+$"))
+        {
+            throw new ValidationException("Username can only contain letters, digits, underscores and hyphens");
+        }
+    }
+
+    public static void validPassword(String password)
+    {
+        if (password == null || password.isBlank())
+        {
+            throw new ValidationException("Password cannot be blank");
+        }
+
+        if (!password.matches("^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[\\p{Punct}]).{8,}$"))
+        {
+            throw new ValidationException("Password must contain uppercase, lowercase, digit and special character");
         }
     }
 }

@@ -74,7 +74,7 @@ public class SubraceService implements IReferenceDataService <DNDSubraceDetailDT
     @Override
     public Optional<SubraceDTO> getByName(String name)
     {
-        Validator.notBlank(name);
+        Validator.notNullOrBlank(name);
         Subrace subrace = subraceDAO.getByName(name);
         return Optional.ofNullable(DTOMapper.subraceToDTO(subrace));
     }

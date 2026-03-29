@@ -44,7 +44,7 @@ public class TraitService implements IReferenceDataService<DNDTraitDetailDTO, Tr
     @Override
     public Optional<TraitDTO> getByName(String name)
     {
-        Validator.notBlank(name);
+        Validator.notNullOrBlank(name);
         Trait trait = traitDAO.getByName(name);
         return Optional.ofNullable(DTOMapper.traitToDTO(trait));
     }

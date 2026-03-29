@@ -45,7 +45,7 @@ public class LanguageService implements IReferenceDataService<DNDLanguageDetailD
     @Override
     public Optional<LanguageDTO> getByName(String name)
     {
-        Validator.notBlank(name);
+        Validator.notNullOrBlank(name);
         Language language = languageDAO.getByName(name);
         return Optional.ofNullable(DTOMapper.languageToDTO(language));
     }

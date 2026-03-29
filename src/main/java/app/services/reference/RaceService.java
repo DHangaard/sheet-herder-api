@@ -76,7 +76,7 @@ public class RaceService implements IReferenceDataService<DNDRaceDetailDTO, Race
     @Override
     public Optional<RaceDTO> getByName(String name)
     {
-        Validator.notBlank(name);
+        Validator.notNullOrBlank(name);
         Race race = raceDAO.getByName(name);
         return Optional.ofNullable(DTOMapper.raceToDTO(race));
     }
