@@ -1,6 +1,7 @@
 package app.routes;
 
 import app.controllers.IReferenceController;
+import app.security.enums.Role;
 import io.javalin.apibuilder.EndpointGroup;
 
 import static io.javalin.apibuilder.ApiBuilder.get;
@@ -21,9 +22,9 @@ public class LanguageRoute
         {
             path("/languages", () ->
             {
-                get(languageController::getAll);
-                get("/id/{id}", languageController::getById);
-                get("/name/{name}", languageController::getByName);
+                get(languageController::getAll, Role.ANYONE);
+                get("/id/{id}", languageController::getById, Role.ANYONE);
+                get("/name/{name}", languageController::getByName, Role.ANYONE);
             });
         };
     }

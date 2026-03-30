@@ -1,6 +1,7 @@
 package app.routes;
 
 import app.controllers.IReferenceController;
+import app.security.enums.Role;
 import io.javalin.apibuilder.EndpointGroup;
 
 import static io.javalin.apibuilder.ApiBuilder.get;
@@ -21,9 +22,9 @@ public class TraitRoute
         {
             path("/traits", () ->
             {
-                get(traitController::getAll);
-                get("/id/{id}", traitController::getById);
-                get("/name/{name}", traitController::getByName);
+                get(traitController::getAll, Role.ANYONE);
+                get("/id/{id}", traitController::getById, Role.ANYONE);
+                get("/name/{name}", traitController::getByName, Role.ANYONE);
             });
         };
     }
