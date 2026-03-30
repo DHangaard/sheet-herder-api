@@ -1,184 +1,129 @@
 package app.security.controllers;
 
-import app.daos.ISecurityDAO;
-import app.entities.User;
-import app.exceptions.ApiException;
-import app.exceptions.NotAuthorizedException;
-import app.exceptions.ValidationException;
-import app.utils.Utils;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import dk.bugelhartmann.ITokenSecurity;
-import dk.bugelhartmann.TokenSecurity;
-import dk.bugelhartmann.TokenVerificationException;
-import dk.bugelhartmann.UserDTO;
+import app.exceptions.ForbiddenException;
+import app.exceptions.TokenVerificationException;
+import app.exceptions.UnauthorizedException;
+import app.security.dtos.LoginRequestDTO;
+import app.security.dtos.LoginResponseDTO;
+import app.security.dtos.RegisterRequestDTO;
+import app.security.dtos.UserDTO;
+import app.security.services.ISecurityService;
+import app.security.utils.JWTUtil;
 import io.javalin.http.Context;
-import io.javalin.http.ForbiddenResponse;
 import io.javalin.http.HttpStatus;
-import io.javalin.http.UnauthorizedResponse;
 
-import java.text.ParseException;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SecurityController implements ISecurityController
 {
-    private final ISecurityDAO securityDAO;
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    ITokenSecurity tokenSecurity = new TokenSecurity();
+    private static final String USER_ATTRIBUTE = "user";
+    private final ISecurityService securityService;
 
-    public SecurityController(ISecurityDAO securityDAO)
+    public SecurityController(ISecurityService securityService)
     {
-        this.securityDAO = securityDAO;
+        this.securityService = securityService;
     }
 
     @Override
     public void login(Context ctx)
     {
-        UserDTO user = ctx.bodyAsClass(UserDTO.class);
-        try
-        {
-            User userEntity = securityDAO.getVerifiedUser(user.getUsername(), user.getPassword());
-            String token = createToken(new UserDTO(userEntity.getUserName(), userEntity.getRolesAsStrings()));
-            ObjectNode node = objectMapper.createObjectNode();
-
-            ctx.status(200).json(node
-                    .put("token", token)
-                    .put("username", userEntity.getUserName()));
-        }
-        catch (ValidationException e)
-        {
-            throw new ApiException(401, "Failed to login " + e.getMessage());
-        }
+        LoginRequestDTO request = ctx.bodyAsClass(LoginRequestDTO.class);
+        String token = securityService.login(request);
+        ctx.status(HttpStatus.OK).json(new LoginResponseDTO(token));
     }
 
     @Override
     public void register(Context ctx)
     {
-        UserDTO user = ctx.bodyAsClass(UserDTO.class);
-        User userEntity = securityDAO.createUser(user.getUsername(), user.getPassword());
-        ObjectNode node = objectMapper.createObjectNode();
-        node.put("msg", "Register successful");
-        ctx.json(node).status(201);
+        RegisterRequestDTO request = ctx.bodyAsClass(RegisterRequestDTO.class);
+        UserDTO user = securityService.register(request);
+        ctx.status(HttpStatus.CREATED).json(user);
     }
 
     @Override
-    public void authenticate(Context ctx) {
-        // This is a preflight request => no need for authentication
-        if (ctx.method().toString().equals("OPTIONS")) {
-            ctx.status(200);
+    public void authenticate(Context ctx)
+    {
+        // CORS preflight request
+        if (ctx.method().toString().equals("OPTIONS"))
+        {
             return;
         }
-        // If the endpoint is not protected with roles or is open to ANYONE role, then skip
-        Set<String> allowedRoles = ctx.routeRoles().stream().map(role -> role.toString().toUpperCase()).collect(Collectors.toSet());
-        if (isOpenEndpoint(allowedRoles))
-            return;
 
-        // If there is no token we do not allow entry
-        UserDTO verifiedTokenUser = validateAndGetUserFromToken(ctx);
-        ctx.attribute("user", verifiedTokenUser); // -> ctx.attribute("user") in ApplicationConfig beforeMatched filter
+        // Endpoint unprotected or open to ANYONE
+        if (isOpenEndpoint(ctx))
+        {
+            return;
+        }
+
+        String token = extractToken(ctx);
+        try
+        {
+            UserDTO user = JWTUtil.parseToken(token);
+            ctx.attribute(USER_ATTRIBUTE, user);
+        }
+        catch (TokenVerificationException e)
+        {
+            throw new UnauthorizedException("Invalid or expired token", e);
+        }
     }
 
     @Override
-    public void authorize(Context ctx) {
-        Set<String> allowedRoles = ctx.routeRoles()
-                .stream()
+    public void authorize(Context ctx)
+    {
+        // Endpoint unprotected or open to ANYONE
+        if (isOpenEndpoint(ctx))
+        {
+            return;
+        }
+
+        UserDTO user = ctx.attribute(USER_ATTRIBUTE);
+        validUser(user);
+        validRole(ctx, user);
+    }
+
+    private boolean isOpenEndpoint(Context ctx)
+    {
+        Set<String> allowedRoles = ctx.routeRoles().stream()
                 .map(role -> role.toString().toUpperCase())
                 .collect(Collectors.toSet());
 
-        // 1. Check if the endpoint is open to all (either by not having any roles or having the ANYONE role set
-        if (isOpenEndpoint(allowedRoles))
-            return;
-        // 2. Get user and ensure it is not null
-        UserDTO user = ctx.attribute("user");
-        if (user == null) {
-            throw new ForbiddenResponse("No user was added from the token");
-        }
-        // 3. See if any role matches
-        if (!userHasAllowedRole(user, allowedRoles))
-            throw new ForbiddenResponse("User was not authorized with roles: " + user.getRoles() + ". Needed roles are: " + allowedRoles);
+        return allowedRoles.isEmpty() || allowedRoles.contains("ANYONE");
     }
 
-    private String createToken(UserDTO user) {
-        try {
-            String ISSUER;
-            String TOKEN_EXPIRE_TIME;
-            String SECRET_KEY;
-
-            if (System.getenv("DEPLOYED") != null) {
-                ISSUER = System.getenv("ISSUER");
-                TOKEN_EXPIRE_TIME = System.getenv("TOKEN_EXPIRE_TIME");
-                SECRET_KEY = System.getenv("SECRET_KEY");
-            } else {
-                ISSUER = Utils.getPropertyValue("ISSUER", "config.properties");
-                TOKEN_EXPIRE_TIME = Utils.getPropertyValue("TOKEN_EXPIRE_TIME", "config.properties");
-                SECRET_KEY = Utils.getPropertyValue("SECRET_KEY", "config.properties");
-            }
-            return tokenSecurity.createToken(user, ISSUER, TOKEN_EXPIRE_TIME, SECRET_KEY);
-        } catch (Exception e) {
-            // logger.error("Could not create token", e);
-            throw new ApiException(500, "Could not create token " + e.getMessage());
-        }
-    }
-
-    private static String getToken(Context ctx) {
-        String header = ctx.header("Authorization");
-        if (header == null) {
-            throw new UnauthorizedResponse("Authorization header is missing"); // UnauthorizedResponse is javalin 6 specific but response is not json!
-        }
-
-        // If the Authorization Header was malformed, then no entry
-        String token = header.split(" ")[1];
-        if (token == null) {
-            throw new UnauthorizedResponse("Authorization header is malformed"); // UnauthorizedResponse is javalin 6 specific but response is not json!
-        }
-        return token;
-    }
-
-    private boolean isOpenEndpoint(Set<String> allowedRoles) {
-        // If the endpoint is not protected with any roles:
-        if (allowedRoles.isEmpty())
-            return true;
-
-        // 1. Get permitted roles and Check if the endpoint is open to all with the ANYONE role
-        if (allowedRoles.contains("ANYONE")) {
-            return true;
-        }
-        return false;
-    }
-
-    private UserDTO validateAndGetUserFromToken(Context ctx) {
-        String token = getToken(ctx);
-        UserDTO verifiedTokenUser = verifyToken(token);
-        if (verifiedTokenUser == null) {
-            throw new UnauthorizedResponse("Invalid user or token"); // UnauthorizedResponse is javalin 6 specific but response is not json!
-        }
-        return verifiedTokenUser;
-    }
-
-    private UserDTO verifyToken(String token) {
-        boolean IS_DEPLOYED = (System.getenv("DEPLOYED") != null);
-        String SECRET = IS_DEPLOYED ? System.getenv("SECRET_KEY") : Utils.getPropertyValue("SECRET_KEY", "config.properties");
-
-        try {
-            if (tokenSecurity.tokenIsValid(token, SECRET) && tokenSecurity.tokenNotExpired(token)) {
-                return tokenSecurity.getUserWithRolesFromToken(token);
-            } else {
-                throw new NotAuthorizedException(403, "Token is not valid");
-            }
-        } catch (ParseException | NotAuthorizedException | TokenVerificationException e) {
-            // logger.error("Could not create token", e);
-            throw new ApiException(HttpStatus.UNAUTHORIZED.getCode(), "Unauthorized. Could not verify token");
-        }
-    }
-
-    private static boolean userHasAllowedRole(UserDTO user, Set<String> allowedRoles) {
-        return user.getRoles().stream()
-                .anyMatch(role -> allowedRoles.contains(role.toUpperCase()));
-    }
-
-    public SecurityController getInstance()
+    private String extractToken(Context ctx)
     {
-        return this;
+        String header = ctx.header("Authorization");
+        if (header == null)
+        {
+            throw new UnauthorizedException("Authorization header is missing");
+        }
+
+        String[] parts = header.split(" ");
+        if (parts.length < 2 || parts[1].isBlank())
+        {
+            throw new UnauthorizedException("Authorization header is malformed");
+        }
+
+        return parts[1];
+    }
+
+    private void validUser(UserDTO user)
+    {
+        if (user == null)
+        {
+            throw new ForbiddenException("No user found on request context");
+        }
+    }
+
+    private void validRole(Context ctx, UserDTO user)
+    {
+        boolean hasRole = user.roles().stream()
+                .anyMatch(role -> ctx.routeRoles().contains(role));
+
+        if (!hasRole)
+        {
+            throw new ForbiddenException("Access denied: required roles are " + ctx.routeRoles());
+        }
     }
 }
