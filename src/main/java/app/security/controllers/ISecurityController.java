@@ -4,11 +4,11 @@ import io.javalin.http.Context;
 
 public interface ISecurityController
 {
-    void login(Context ctx); // to get a token
+    void login(Context ctx);
 
-    void register(Context ctx); // to get a user
+    void register(Context ctx);
 
-    void authenticate(Context ctx); // to verify roles inside token
+    void authenticate(Context ctx) throws Exception;
 
-    void authorize(Context ctx);
+    void authorize(Context ctx) throws Exception;
 }
