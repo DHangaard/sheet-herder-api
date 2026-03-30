@@ -1,4 +1,4 @@
-package app.config;
+package app.config.hibernate;
 
 import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.SessionFactory;
