@@ -58,6 +58,13 @@ public class ApplicationConfig
     private static void configureExceptions(JavalinConfig config)
     {
         config.routes.exception(ApiException.class, (e, ctx) ->
-                ctx.status(e.getCode()).json(Map.of("status", e.getCode(), "message", e.getMessage())));
+        {
+            ctx.status(e.getCode()).json(Map.of("status", e.getCode(), "message", e.getMessage()));
+        });
+
+        config.routes.exception(Exception.class, (e, ctx) ->
+        {
+            ctx.status(500).json(Map.of("status", 500, "message", "Internal server error"));
+        });
     }
 }
