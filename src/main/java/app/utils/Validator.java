@@ -7,7 +7,9 @@ import java.util.List;
 public final class Validator
 {
 
-    private Validator() {}
+    private Validator()
+    {
+    }
 
     public static <T> void notNull(T object)
     {
