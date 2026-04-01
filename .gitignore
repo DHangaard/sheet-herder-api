@@ -42,7 +42,9 @@ dist/
 docker-compose.override.yml
 
 # Log files
+logs/
 *.log
+*.gz
 
 # === IDE ===
 # IntelliJ IDEA
