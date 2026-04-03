@@ -25,8 +25,14 @@ public class JWTUtil {
     private static final JWSVerifier VERIFIER;
 
     static {
-        if (SECRET == null || SECRET.length() < 32)
+        if (SECRET == null)
+        {
+            throw new ExceptionInInitializerError("JWT_SECRET environment variable is not set");
+        }
+        if (SECRET.length() < 32)
+        {
             throw new ExceptionInInitializerError("JWT_SECRET must be at least 32 characters");
+        }
         try {
             SIGNER   = new MACSigner(SECRET);
             VERIFIER = new MACVerifier(SECRET);
@@ -93,4 +99,12 @@ public class JWTUtil {
             throw new TokenVerificationException("Invalid token", e);
         }
     }
+    public static void validate()
+    {
+        if (SIGNER == null)
+        {
+            throw new ExceptionInInitializerError("JWTUtil failed to initialize");
+        }
+    }
+
 }
