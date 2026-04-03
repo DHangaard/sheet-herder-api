@@ -46,10 +46,7 @@ public class CharacterSheetDAO implements ICharacterSheetDAO
         try (EntityManager em = emf.createEntityManager())
         {
             CharacterSheet foundCharacterSheet = em.find(CharacterSheet.class, id);
-            if (foundCharacterSheet == null)
-            {
-                throw new NotFoundException("Character sheet not found - id: " + id);
-            }
+            validateNull(foundCharacterSheet, id);
             return foundCharacterSheet;
         }
         catch (PersistenceException e)
@@ -85,10 +82,7 @@ public class CharacterSheetDAO implements ICharacterSheetDAO
         {
             em.getTransaction().begin();
             CharacterSheet foundCharacterSheet = em.find(CharacterSheet.class, id);
-            if (foundCharacterSheet == null)
-            {
-                throw new NotFoundException("Character sheet not found - id: " + id);
-            }
+            validateNull(foundCharacterSheet, id);
             try
             {
                 em.remove(foundCharacterSheet);
@@ -122,6 +116,14 @@ public class CharacterSheetDAO implements ICharacterSheetDAO
             {
                 throw new DatabaseException("Failed to fetch character sheets from user: " + user.getId(), e);
             }
+        }
+    }
+
+    private <T> void validateNull(CharacterSheet characterSheet, T searchParameter)
+    {
+        if (characterSheet == null)
+        {
+            throw new NotFoundException("Character sheet not found: " + searchParameter);
         }
     }
 
