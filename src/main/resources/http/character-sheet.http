@@ -1,0 +1,77 @@
+@token=eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJESGFuZ2FhcmQiLCJzdWIiOiJKb2huLUFkbWluIiwiZXhwIjoxNzc1MTc3Mzc0LCJpYXQiOjE3NzUxNzU1NzQsInJvbGVzIjpbIlVTRVIiXX0.cGUc3I8G7r9GN3mIVDINpMjUTHrCaMmvjdm1Pc2-BXc
+
+### Get all character sheets for user
+GET {{url}}/character-sheets
+Authorization: Bearer {{token}}
+
+### Get character sheet by id
+GET {{url}}/character-sheets/1
+Authorization: Bearer {{token}}
+
+### Create character sheet
+POST {{url}}/character-sheets/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Aragorn",
+  "raceId": 6,
+  "subraceId": null,
+  "languageIds": [8, 11],
+  "abilityScores": {
+    "STR": 15,
+    "DEX": 12,
+    "CON": 14,
+    "INT": 10,
+    "WIS": 13,
+    "CHA": 11
+  }
+}
+
+### Create character sheet - Legolas
+POST {{url}}/character-sheets/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Legolass",
+  "raceId": 7,
+  "subraceId": 2,
+  "languageIds": [8, 11],
+  "abilityScores": {
+    "STR": 10,
+    "DEX": 18,
+    "CON": 12,
+    "INT": 13,
+    "WIS": 14,
+    "CHA": 12
+  }
+}
+
+### Update character sheet
+PUT {{url}}/character-sheets/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": 1,
+  "name": "Aragorn",
+  "raceId": 1,
+  "subraceId": null,
+  "languageIds": [1, 2],
+  "abilityScores": {
+    "STR": 15,
+    "DEX": 12,
+    "CON": 14,
+    "INT": 10,
+    "WIS": 13,
+    "CHA": 11
+  },
+  "notes": {
+    "Session 1": "The party went to a castle..."
+  }
+}
+
+### Delete character sheet
+DELETE {{url}}/character-sheets/2
+Authorization: Bearer {{token}}
