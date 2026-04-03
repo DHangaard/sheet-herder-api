@@ -1,13 +1,13 @@
 package app.persistence.daos.domain.implementations;
 
 import app.exceptions.DatabaseException;
+import app.exceptions.NotFoundException;
 import app.persistence.daos.domain.interfaces.IUserDAO;
 import app.persistence.entities.domain.User;
 import app.security.enums.Role;
 import app.exceptions.ConflictException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceException;
 
 import java.util.Optional;
@@ -196,7 +196,7 @@ public class UserDAO implements IUserDAO
     {
         if (user == null)
         {
-            throw new EntityNotFoundException("User not found: " + searchParameter);
+            throw new NotFoundException("User not found: " + searchParameter);
         }
     }
 
