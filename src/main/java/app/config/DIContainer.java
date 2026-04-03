@@ -4,6 +4,7 @@ import app.config.hibernate.HibernateConfig;
 import app.controllers.implementations.*;
 import app.controllers.interfaces.ICharacterSheetController;
 import app.controllers.interfaces.IReferenceController;
+import app.controllers.interfaces.IUserController;
 import app.dtos.dnd.DNDLanguageDetailDTO;
 import app.dtos.dnd.DNDRaceDetailDTO;
 import app.dtos.dnd.DNDSubraceDetailDTO;
@@ -94,6 +95,8 @@ public final class DIContainer
     @Getter
     private final ISecurityController securityController;
     @Getter
+    private final IUserController userController;
+    @Getter
     private final ICharacterSheetController characterSheetController;
 
 
@@ -131,6 +134,7 @@ public final class DIContainer
         this.subraceController = new SubraceController(subraceService);
 
         this.securityController = new SecurityController(securityService);
+        this.userController = new UserController(userService);
         this.characterSheetController = new CharacterSheetController(characterSheetService, userService);
     }
 

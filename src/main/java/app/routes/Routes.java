@@ -12,6 +12,7 @@ public class Routes
     private final RaceRoute raceRoute;
     private final SubraceRoute subraceRoute;
     private final SecurityRoute securityRoute;
+    private final UserRoute userRoute;
     private final CharacterSheetRoute characterSheetRoute;
 
     public Routes(LanguageRoute languageRoute,
@@ -19,6 +20,7 @@ public class Routes
                   RaceRoute raceRoute,
                   SubraceRoute subraceRoute,
                   SecurityRoute securityRoute,
+                  UserRoute userRoute,
                   CharacterSheetRoute characterSheetRoute)
     {
         this.languageRoute = languageRoute;
@@ -26,6 +28,7 @@ public class Routes
         this.raceRoute = raceRoute;
         this.subraceRoute = subraceRoute;
         this.securityRoute = securityRoute;
+        this.userRoute = userRoute;
         this.characterSheetRoute = characterSheetRoute;
     }
 
@@ -40,6 +43,7 @@ public class Routes
                 raceRoute.getRoutes().addEndpoints();
                 subraceRoute.getRoutes().addEndpoints();
                 securityRoute.getRoutes().addEndpoints();
+                userRoute.getRoutes().addEndpoints();
                 characterSheetRoute.getRoutes().addEndpoints();
             });
         };
