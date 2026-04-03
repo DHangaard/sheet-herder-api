@@ -1,10 +1,13 @@
 package app.controllers.implementations;
 
+import app.controllers.ControllerConstants;
+import app.controllers.interfaces.ICharacterSheetController;
 import app.dtos.domain.CharacterSheetDTO;
 import app.dtos.domain.CreateCharacterSheetDTO;
 import app.dtos.domain.UpdateCharacterSheetDTO;
+import app.exceptions.UnauthorizedException;
 import app.persistence.entities.domain.User;
-import app.security.dtos.UserDTO;
+import app.security.dtos.UserSecurityDTO;
 import app.services.domain.interfaces.ICharacterSheetService;
 import app.services.domain.interfaces.IUserService;
 import io.javalin.http.Context;
@@ -12,9 +15,9 @@ import io.javalin.http.HttpStatus;
 
 import java.util.List;
 
-public class CharacterSheetController implements app.controllers.interfaces.ICharacterSheetController
+public class CharacterSheetController implements ICharacterSheetController
 {
-    private static final String USER_ATTRIBUTE = "user";
+    private static final String USER_ATTRIBUTE = ControllerConstants.USER_ATTRIBUTE;
     private final ICharacterSheetService characterSheetService;
     private final IUserService userService;
 
@@ -70,7 +73,11 @@ public class CharacterSheetController implements app.controllers.interfaces.ICha
 
     private User resolveUser(Context ctx)
     {
-        UserDTO userDTO = ctx.attribute(USER_ATTRIBUTE);
-        return userService.getByUsername(userDTO.username());
+        UserSecurityDTO userSecurityDTO = ctx.attribute(USER_ATTRIBUTE);
+        if (userSecurityDTO == null)
+        {
+            throw new UnauthorizedException("No authenticated user on request");
+        }
+        return userService.getById(userSecurityDTO.id());
     }
 }
