@@ -38,10 +38,10 @@ public class Race
     @Column(name = "bonus")
     private Map<Ability, Integer> abilityBonuses;
 
-    @Column(columnDefinition = "TEXT") // TODO Rethink use of "TEXT"
+    @Column(columnDefinition = "TEXT")
     private String ageDescription;
 
-    @Column(columnDefinition = "TEXT") // TODO Rethink use of "TEXT"
+    @Column(columnDefinition = "TEXT")
     private String alignment;
 
     @Enumerated(EnumType.STRING)
@@ -57,7 +57,7 @@ public class Race
     )
     private Set<Language> languages;
 
-    @Column(columnDefinition = "TEXT") // TODO Rethink use of "TEXT"
+    @Column(columnDefinition = "TEXT")
     private String languageDescription;
 
     @ManyToMany(fetch = FetchType.EAGER)

@@ -28,8 +28,8 @@ public class Trait
             name = "trait_descriptions",
             joinColumns = @JoinColumn(name = "trait_id")
     )
-    @Column(name = "description", columnDefinition = "TEXT") // TODO Rethink use of "TEXT"
-    private List<String> descriptions; // TODO Check for instances of multiple descriptions or refactor
+    @Column(name = "description", columnDefinition = "TEXT")
+    private List<String> descriptions;
 
     @Column(nullable = false, length = 64)
     private String contentHash;

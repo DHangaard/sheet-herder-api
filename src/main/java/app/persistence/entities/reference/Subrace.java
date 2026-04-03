@@ -25,7 +25,7 @@ public class Subrace
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(columnDefinition = "TEXT") // TODO Rethink use of "TEXT"
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @ManyToOne(fetch = FetchType.EAGER)
