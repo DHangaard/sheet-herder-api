@@ -1,6 +1,7 @@
 package app.persistence.entities.reference;
 
 import app.enums.LanguageType;
+import app.persistence.entities.IEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-public class Language
+public class Language implements IEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

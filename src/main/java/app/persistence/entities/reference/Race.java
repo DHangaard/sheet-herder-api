@@ -2,6 +2,7 @@ package app.persistence.entities.reference;
 
 import app.enums.Ability;
 import app.enums.Size;
+import app.persistence.entities.IEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +16,7 @@ import java.util.Set;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-public class Race
+public class Race implements IEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

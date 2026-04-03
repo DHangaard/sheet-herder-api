@@ -1,6 +1,7 @@
 package app.persistence.entities.domain;
 
 import app.enums.CampaignRole;
+import app.persistence.entities.IEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +11,7 @@ import lombok.*;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(uniqueConstraints = @UniqueConstraint(name = "uk_user_membership_campaign", columnNames = {"user_id", "campaign_id"}))
-public class CampaignMembership
+public class CampaignMembership implements IEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

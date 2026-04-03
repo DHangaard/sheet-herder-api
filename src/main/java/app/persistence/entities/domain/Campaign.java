@@ -1,5 +1,6 @@
 package app.persistence.entities.domain;
 
+import app.persistence.entities.IEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-public class Campaign
+public class Campaign implements IEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,5 +1,6 @@
 package app.persistence.entities.reference;
 
+import app.persistence.entities.IEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-public class Trait
+public class Trait implements IEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

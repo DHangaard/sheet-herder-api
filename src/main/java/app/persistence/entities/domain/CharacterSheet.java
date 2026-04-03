@@ -1,6 +1,7 @@
 package app.persistence.entities.domain;
 
 import app.enums.Ability;
+import app.persistence.entities.IEntity;
 import app.persistence.entities.reference.Language;
 import app.persistence.entities.reference.Race;
 import app.persistence.entities.reference.Subrace;
@@ -18,8 +19,8 @@ import java.util.Set;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(name = "uk_user_character_name", columnNames = {"user_id", "name"}))
-public class CharacterSheet
+@Table(name = "character_sheet", uniqueConstraints = @UniqueConstraint(name = "uk_user_character_name", columnNames = {"user_id", "name"}))
+public class CharacterSheet implements IEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
