@@ -1,17 +1,15 @@
-package app.security.daos;
+package app.persistence.daos.domain.interfaces;
 
+import app.persistence.daos.IDAO;
 import app.persistence.entities.domain.User;
 import app.security.enums.Role;
 
 import java.util.Optional;
 
-public interface IUserDAO
+public interface IUserDAO extends IDAO<User>
 {
-    User create(User user);
     Optional<User> getByEmail(String email);
-    User getById(Long id);
-    User update(User user);
+    Optional<User> getByUsername(String username);
     User addRole(Long id, Role role);
     User removeRole(Long id, Role role);
-    Long delete(Long id);
 }
