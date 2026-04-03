@@ -2,7 +2,7 @@ package app.security.utils;
 
 import app.exceptions.TokenCreationException;
 import app.exceptions.TokenVerificationException;
-import app.security.dtos.UserDTO;
+import app.security.dtos.UserSecurityDTO;
 import app.security.enums.Role;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
@@ -43,7 +43,7 @@ public class JWTUtil {
 
     private JWTUtil() {}
 
-    public static String createToken(String username, Set<Role> roles) throws TokenCreationException
+    public static String createToken(Long id, String username, Set<Role> roles) throws TokenCreationException
     {
         try
         {
@@ -51,6 +51,7 @@ public class JWTUtil {
                     .subject(username)
                     .issuer(ISSUER)
                     .issueTime(new Date())
+                    .claim("id", id)
                     .claim("roles", roles.stream()
                             .map(Role::name)
                             .collect(Collectors.toList()))
@@ -67,7 +68,7 @@ public class JWTUtil {
         }
     }
 
-    public static UserDTO parseToken(String token) throws TokenVerificationException
+    public static UserSecurityDTO parseToken(String token) throws TokenVerificationException
     {
         try
         {
@@ -88,7 +89,7 @@ public class JWTUtil {
                     .map(Role::valueOf)
                     .collect(Collectors.toSet());
 
-            return new UserDTO(claims.getSubject(), roles);
+            return new UserSecurityDTO(claims.getLongClaim("id"), claims.getSubject(), roles);
         }
         catch (TokenVerificationException e)
         {
