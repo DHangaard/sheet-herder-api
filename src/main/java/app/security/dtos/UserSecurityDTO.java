@@ -4,7 +4,8 @@ import app.security.enums.Role;
 
 import java.util.Set;
 
-public record UserDTO(
+public record UserSecurityDTO(
+        Long id,
         String username,
         Set<Role> roles
 )
