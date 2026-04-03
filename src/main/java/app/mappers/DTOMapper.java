@@ -1,10 +1,12 @@
 package app.mappers;
 
+import app.dtos.domain.CharacterSheetDTO;
 import app.dtos.reference.LanguageDTO;
 import app.dtos.reference.RaceDTO;
 import app.dtos.reference.SubraceDTO;
 import app.dtos.reference.TraitDTO;
 import app.dtos.dnd.DNDAbilityBonusDTO;
+import app.persistence.entities.domain.CharacterSheet;
 import app.persistence.entities.domain.User;
 import app.persistence.entities.reference.Language;
 import app.persistence.entities.reference.Race;
@@ -85,6 +87,24 @@ public class DTOMapper
                 user.getUsername(),
                 user.getRoles()
         );
+    }
+
+    public static CharacterSheetDTO characterSheetToDTO(CharacterSheet characterSheet)
+    {
+        return new CharacterSheetDTO(
+                characterSheet.getId(),
+                characterSheet.getUser().getId(),
+                characterSheet.getName(),
+                characterSheet.getRace() != null ? characterSheet.getRace().getId() : null,
+                characterSheet.getRace() != null ? characterSheet.getRace().getName() : null,
+                characterSheet.getSubrace() != null ? characterSheet.getSubrace().getId() : null,
+                characterSheet.getSubrace() != null ? characterSheet.getSubrace().getName() : null,
+                nullSafeSet(characterSheet.getLanguages(), DTOMapper::languageToDTO),
+                characterSheet.getAbilityScores(),
+                characterSheet.getNotes(),
+                characterSheet.getCreatedAt(),
+                characterSheet.getUpdatedAt()
+                );
     }
 
     private static <T, R> Set<R> nullSafeSet(Set<T> source, Function<T, R> mapper)
