@@ -21,6 +21,13 @@ public final class PasswordUtil
         return BCrypt.hashpw(prehashedPassword, BCrypt.gensalt(BCRYPT_COST));
     }
 
+    public static String hashPassword(String plainPassword, int cost)
+    {
+        requireValid(plainPassword, "Password");
+        String prehashedPassword = prehash(plainPassword);
+        return BCrypt.hashpw(prehashedPassword, BCrypt.gensalt(cost));
+    }
+
     public static boolean verifyPassword(String plainPassword, String hashedPassword)
     {
         if (isNullOrBlank(plainPassword) || isNullOrBlank(hashedPassword))

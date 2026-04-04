@@ -3,11 +3,14 @@ package app.utils;
 import app.exceptions.ValidationException;
 
 import java.util.List;
+import java.util.Set;
 
 public final class Validator
 {
 
-    private Validator() {}
+    private Validator()
+    {
+    }
 
     public static <T> void notNull(T object)
     {
@@ -30,6 +33,14 @@ public final class Validator
         if (objects == null || objects.isEmpty())
         {
             throw new ValidationException("List cannot be null or empty");
+        }
+    }
+
+    public static <T> void notEmpty(Set<T> objects)
+    {
+        if (objects == null || objects.isEmpty())
+        {
+            throw new ValidationException("Set cannot be null or empty");
         }
     }
 

@@ -1,6 +1,7 @@
 package app.persistence.entities.reference;
 
 import app.enums.Ability;
+import app.persistence.entities.IEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,7 +15,7 @@ import java.util.Set;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-public class Subrace
+public class Subrace implements IEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +26,7 @@ public class Subrace
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(columnDefinition = "TEXT") // TODO Rethink use of "TEXT"
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @ManyToOne(fetch = FetchType.EAGER)

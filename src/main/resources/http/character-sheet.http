@@ -1,0 +1,186 @@
+@token=eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJESGFuZ2FhcmQiLCJzdWIiOiJKb2huLUFkbWluIiwiZXhwIjoxNzc1MTc3Mzc0LCJpYXQiOjE3NzUxNzU1NzQsInJvbGVzIjpbIlVTRVIiXX0.cGUc3I8G7r9GN3mIVDINpMjUTHrCaMmvjdm1Pc2-BXc
+
+### Get all character sheets - empty (before creating any)
+GET {{url}}/character-sheets
+Authorization: Bearer {{token}}
+
+### Create character sheet
+POST {{url}}/character-sheets/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Aragorn",
+  "raceId": 6,
+  "subraceId": null,
+  "languageIds": [8, 11],
+  "abilityScores": {
+    "STR": 15,
+    "DEX": 12,
+    "CON": 14,
+    "INT": 10,
+    "WIS": 13,
+    "CHA": 11
+  }
+}
+
+### Create secondary character sheet (for update/delete testing)
+POST {{url}}/character-sheets/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Legolas",
+  "raceId": 7,
+  "subraceId": 2,
+  "languageIds": [8, 11],
+  "abilityScores": {
+    "STR": 10,
+    "DEX": 18,
+    "CON": 12,
+    "INT": 13,
+    "WIS": 14,
+    "CHA": 12
+  }
+}
+
+### Create character sheet - duplicate name (expect 409)
+POST {{url}}/character-sheets/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Aragorn",
+  "raceId": 6,
+  "subraceId": null,
+  "languageIds": [8],
+  "abilityScores": {
+    "STR": 10,
+    "DEX": 10,
+    "CON": 10,
+    "INT": 10,
+    "WIS": 10,
+    "CHA": 10
+  }
+}
+
+### Create character sheet - subrace without race (expect 400)
+POST {{url}}/character-sheets/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Invalid",
+  "raceId": null,
+  "subraceId": 2,
+  "languageIds": [8],
+  "abilityScores": {
+    "STR": 10,
+    "DEX": 10,
+    "CON": 10,
+    "INT": 10,
+    "WIS": 10,
+    "CHA": 10
+  }
+}
+
+### Create character sheet - subrace not belonging to race (expect 400)
+POST {{url}}/character-sheets/
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Invalid2",
+  "raceId": 6,
+  "subraceId": 2,
+  "languageIds": [8],
+  "abilityScores": {
+    "STR": 10,
+    "DEX": 10,
+    "CON": 10,
+    "INT": 10,
+    "WIS": 10,
+    "CHA": 10
+  }
+}
+
+### Get all character sheets - populated
+GET {{url}}/character-sheets
+Authorization: Bearer {{token}}
+
+### Get character sheet by id
+GET {{url}}/character-sheets/1
+Authorization: Bearer {{token}}
+
+### Get nonexistent character sheet (expect 404)
+GET {{url}}/character-sheets/999
+Authorization: Bearer {{token}}
+
+### Update character sheet - all fields
+PUT {{url}}/character-sheets/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Aragorn",
+  "raceId": 1,
+  "subraceId": null,
+  "languageIds": [1, 2],
+  "abilityScores": {
+    "STR": 15,
+    "DEX": 12,
+    "CON": 14,
+    "INT": 10,
+    "WIS": 13,
+    "CHA": 11
+  },
+  "notes": {
+    "Session 1": "The party went to a castle..."
+  }
+}
+
+### Update character sheet - notes only
+PUT {{url}}/character-sheets/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "notes": {
+    "Session 1": "The party went to a castle...",
+    "Session 2": "They encountered a dragon."
+  }
+}
+
+### Update another user's character sheet (expect 403)
+PUT {{url}}/character-sheets/999
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Hacked"
+}
+
+### Update nonexistent character sheet (expect 404)
+PUT {{url}}/character-sheets/999
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Ghost"
+}
+
+### Delete another user's character sheet (expect 403)
+DELETE {{url}}/character-sheets/999
+Authorization: Bearer {{token}}
+
+### Delete nonexistent character sheet (expect 404)
+DELETE {{url}}/character-sheets/999
+Authorization: Bearer {{token}}
+
+### Delete character sheet - Legolas (expect 204)
+DELETE {{url}}/character-sheets/2
+Authorization: Bearer {{token}}
+
+### Get all character sheets - after delete
+GET {{url}}/character-sheets
+Authorization: Bearer {{token}}

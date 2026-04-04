@@ -1,19 +1,19 @@
 package app.security.services;
 
 import app.exceptions.ConflictException;
-import app.exceptions.TokenCreationException;
 import app.exceptions.UnauthorizedException;
 import app.mappers.DTOMapper;
 import app.persistence.entities.domain.User;
-import app.security.daos.IUserDAO;
+import app.persistence.daos.domain.interfaces.IUserDAO;
 import app.security.dtos.LoginRequestDTO;
 import app.security.dtos.RegisterRequestDTO;
-import app.security.dtos.UserDTO;
+import app.security.dtos.UserSecurityDTO;
 import app.security.utils.JWTUtil;
 import app.security.utils.PasswordUtil;
 import app.utils.Validator;
-import com.nimbusds.jose.JOSEException;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class SecurityService implements ISecurityService
 {
     private final IUserDAO userDAO;
@@ -24,7 +24,7 @@ public class SecurityService implements ISecurityService
     }
 
     @Override
-    public UserDTO register(RegisterRequestDTO request)
+    public UserSecurityDTO register(RegisterRequestDTO request)
     {
         Validator.validEmail(request.email());
         Validator.validUsername(request.username());
@@ -36,7 +36,9 @@ public class SecurityService implements ISecurityService
 
         String hashedPassword = PasswordUtil.hashPassword(request.password());
         User user = userDAO.create(new User(request.email(), request.username(), hashedPassword));
-        return DTOMapper.userToDTO(user);
+        UserSecurityDTO dto = DTOMapper.userToUserSecurityDTO(user);
+        log.info("User registered: {}", user.getEmail());
+        return dto;
     }
 
     @Override
@@ -45,14 +47,19 @@ public class SecurityService implements ISecurityService
         Validator.validEmail(request.email());
         Validator.notNullOrBlank(request.password());
 
-        User user = userDAO.getByEmail(request.email())
-                .orElseThrow(() -> new UnauthorizedException("Invalid credentials"));
+        User user = userDAO.getByEmail(request.email()).orElseThrow(() -> {
+            log.warn("Failed login attempt for: {}", request.email());
+            return new UnauthorizedException("Invalid credentials");
+        });
 
         if (!PasswordUtil.verifyPassword(request.password(), user.getHashedPassword()))
         {
+            log.warn("Failed login attempt for: {}", user.getEmail());
             throw new UnauthorizedException("Invalid credentials");
         }
 
-        return JWTUtil.createToken(user.getUsername(), user.getRoles());
+        String token = JWTUtil.createToken(user.getId(), user.getUsername(), user.getRoles());
+        log.info("User logged in: {}", user.getEmail());
+        return token;
     }
 }

@@ -1,5 +1,6 @@
 package app.persistence.entities.reference;
 
+import app.persistence.entities.IEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-public class Trait
+public class Trait implements IEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,8 +29,8 @@ public class Trait
             name = "trait_descriptions",
             joinColumns = @JoinColumn(name = "trait_id")
     )
-    @Column(name = "description", columnDefinition = "TEXT") // TODO Rethink use of "TEXT"
-    private List<String> descriptions; // TODO Check for instances of multiple descriptions or refactor
+    @Column(name = "description", columnDefinition = "TEXT")
+    private List<String> descriptions;
 
     @Column(nullable = false, length = 64)
     private String contentHash;

@@ -1,5 +1,8 @@
 package app.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum Size
 {
     SMALL("Small"),
@@ -13,11 +16,13 @@ public enum Size
         this.value = value;
     }
 
+    @JsonValue
     public String getValue()
     {
         return value;
     }
 
+    @JsonCreator
     public static Size fromValue(String value)
     {
         for (Size size : values())

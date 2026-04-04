@@ -1,12 +1,13 @@
 package app.security.controllers;
 
+import app.controllers.ControllerConstants;
 import app.exceptions.ForbiddenException;
 import app.exceptions.TokenVerificationException;
 import app.exceptions.UnauthorizedException;
 import app.security.dtos.LoginRequestDTO;
 import app.security.dtos.LoginResponseDTO;
 import app.security.dtos.RegisterRequestDTO;
-import app.security.dtos.UserDTO;
+import app.security.dtos.UserSecurityDTO;
 import app.security.services.ISecurityService;
 import app.security.utils.JWTUtil;
 import io.javalin.http.Context;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 
 public class SecurityController implements ISecurityController
 {
-    private static final String USER_ATTRIBUTE = "user";
+    private static final String USER_ATTRIBUTE = ControllerConstants.USER_ATTRIBUTE;
     private final ISecurityService securityService;
 
     public SecurityController(ISecurityService securityService)
@@ -37,7 +38,7 @@ public class SecurityController implements ISecurityController
     public void register(Context ctx)
     {
         RegisterRequestDTO request = ctx.bodyAsClass(RegisterRequestDTO.class);
-        UserDTO user = securityService.register(request);
+        UserSecurityDTO user = securityService.register(request);
         ctx.status(HttpStatus.CREATED).json(user);
     }
 
@@ -59,7 +60,7 @@ public class SecurityController implements ISecurityController
         String token = extractToken(ctx);
         try
         {
-            UserDTO user = JWTUtil.parseToken(token);
+            UserSecurityDTO user = JWTUtil.parseToken(token);
             ctx.attribute(USER_ATTRIBUTE, user);
         }
         catch (TokenVerificationException e)
@@ -77,7 +78,7 @@ public class SecurityController implements ISecurityController
             return;
         }
 
-        UserDTO user = ctx.attribute(USER_ATTRIBUTE);
+        UserSecurityDTO user = ctx.attribute(USER_ATTRIBUTE);
         validUser(user);
         validRole(ctx, user);
     }
@@ -108,15 +109,15 @@ public class SecurityController implements ISecurityController
         return parts[1];
     }
 
-    private void validUser(UserDTO user)
+    private void validUser(UserSecurityDTO user)
     {
         if (user == null)
         {
-            throw new ForbiddenException("No user found on request context");
+            throw new UnauthorizedException("No user found on request context");
         }
     }
 
-    private void validRole(Context ctx, UserDTO user)
+    private void validRole(Context ctx, UserSecurityDTO user)
     {
         boolean hasRole = user.roles().stream()
                 .anyMatch(role -> ctx.routeRoles().contains(role));

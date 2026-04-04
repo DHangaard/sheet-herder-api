@@ -2,10 +2,10 @@ package app.security.services;
 
 import app.security.dtos.LoginRequestDTO;
 import app.security.dtos.RegisterRequestDTO;
-import app.security.dtos.UserDTO;
+import app.security.dtos.UserSecurityDTO;
 
 public interface ISecurityService
 {
-    UserDTO register(RegisterRequestDTO request);
+    UserSecurityDTO register(RegisterRequestDTO request);
     String login(LoginRequestDTO request);
 }

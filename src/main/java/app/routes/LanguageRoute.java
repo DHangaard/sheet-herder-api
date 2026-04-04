@@ -1,6 +1,6 @@
 package app.routes;
 
-import app.controllers.IReferenceController;
+import app.controllers.interfaces.IReferenceController;
 import app.security.enums.Role;
 import io.javalin.apibuilder.EndpointGroup;
 

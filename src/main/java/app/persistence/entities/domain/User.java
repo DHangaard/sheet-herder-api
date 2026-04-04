@@ -1,9 +1,9 @@
 package app.persistence.entities.domain;
 
+import app.persistence.entities.IEntity;
 import app.security.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -16,7 +16,7 @@ import java.util.Set;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
 @Table(name = "users")
-public class User
+public class User implements IEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

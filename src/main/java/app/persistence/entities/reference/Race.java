@@ -2,6 +2,7 @@ package app.persistence.entities.reference;
 
 import app.enums.Ability;
 import app.enums.Size;
+import app.persistence.entities.IEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,7 +16,7 @@ import java.util.Set;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-public class Race
+public class Race implements IEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,10 +39,10 @@ public class Race
     @Column(name = "bonus")
     private Map<Ability, Integer> abilityBonuses;
 
-    @Column(columnDefinition = "TEXT") // TODO Rethink use of "TEXT"
+    @Column(columnDefinition = "TEXT")
     private String ageDescription;
 
-    @Column(columnDefinition = "TEXT") // TODO Rethink use of "TEXT"
+    @Column(columnDefinition = "TEXT")
     private String alignment;
 
     @Enumerated(EnumType.STRING)
@@ -57,7 +58,7 @@ public class Race
     )
     private Set<Language> languages;
 
-    @Column(columnDefinition = "TEXT") // TODO Rethink use of "TEXT"
+    @Column(columnDefinition = "TEXT")
     private String languageDescription;
 
     @ManyToMany(fetch = FetchType.EAGER)

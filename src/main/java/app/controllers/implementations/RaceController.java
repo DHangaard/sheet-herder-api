@@ -1,0 +1,41 @@
+package app.controllers.implementations;
+
+import app.controllers.interfaces.IReferenceController;
+import app.dtos.dnd.DNDRaceDetailDTO;
+import app.dtos.reference.RaceDTO;
+import app.services.reference.interfaces.IReferenceDataService;
+import io.javalin.http.Context;
+
+public class RaceController implements IReferenceController
+{
+    private final IReferenceDataService<DNDRaceDetailDTO, RaceDTO>  raceService;
+
+    public RaceController(IReferenceDataService<DNDRaceDetailDTO, RaceDTO>  raceService)
+    {
+        this.raceService = raceService;
+    }
+
+    @Override
+    public void getById(Context ctx)
+    {
+        Long id = Long.parseLong(ctx.pathParam("id"));
+        RaceDTO raceDTO = raceService.getById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Race with id " + id + " not found"));
+        ctx.status(200).json(raceDTO);
+    }
+
+    @Override
+    public void getByName(Context ctx)
+    {
+        String name = ctx.pathParam("name");
+        RaceDTO raceDTO = raceService.getByName(name)
+                .orElseThrow(() -> new IllegalArgumentException("Race with name \"" + name + "\" not found"));
+        ctx.status(200).json(raceDTO);
+    }
+
+    @Override
+    public void getAll(Context ctx)
+    {
+        ctx.status(200).json(raceService.getAll());
+    }
+}

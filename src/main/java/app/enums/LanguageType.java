@@ -1,5 +1,8 @@
 package app.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum LanguageType
 {
     STANDARD("Standard"),
@@ -12,11 +15,13 @@ public enum LanguageType
         this.value = value;
     }
 
+    @JsonValue
     public String getValue()
     {
         return value;
     }
 
+    @JsonCreator
     public static LanguageType fromValue(String value)
     {
         for (LanguageType languageType : values())

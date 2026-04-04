@@ -42,7 +42,9 @@ dist/
 docker-compose.override.yml
 
 # Log files
+logs/
 *.log
+*.gz
 
 # === IDE ===
 # IntelliJ IDEA
@@ -51,6 +53,7 @@ docker-compose.override.yml
 *.ipr
 *.iws
 out/
+.run/
 
 # Eclipse
 .classpath

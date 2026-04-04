@@ -1,5 +1,8 @@
 package app.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum Ability
 {
     CHARISMA("CHA"),
@@ -16,11 +19,13 @@ public enum Ability
         this.value = value;
     }
 
+    @JsonValue
     public String getValue()
     {
         return value;
     }
 
+    @JsonCreator
     public static Ability fromValue(String value)
     {
         for (Ability ability : values())

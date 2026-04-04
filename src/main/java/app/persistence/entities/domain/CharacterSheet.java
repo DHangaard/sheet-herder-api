@@ -1,9 +1,11 @@
 package app.persistence.entities.domain;
 
 import app.enums.Ability;
+import app.persistence.entities.IEntity;
 import app.persistence.entities.reference.Language;
 import app.persistence.entities.reference.Race;
 import app.persistence.entities.reference.Subrace;
+import app.utils.Validator;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,8 +19,8 @@ import java.util.Set;
 @ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(name = "uk_user_character_name", columnNames = {"user_id", "name"}))
-public class CharacterSheet
+@Table(name = "character_sheet", uniqueConstraints = @UniqueConstraint(name = "uk_user_character_name", columnNames = {"user_id", "name"}))
+public class CharacterSheet implements IEntity
 {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,22 +28,22 @@ public class CharacterSheet
     @EqualsAndHashCode.Include
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Column(nullable = false)
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "race_id")
     private Race race;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "subrace_id")
     private Subrace subrace;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "character_languages",
             joinColumns = @JoinColumn(name = "character_id"),
@@ -49,7 +51,7 @@ public class CharacterSheet
     )
     private Set<Language> languages;
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "character_ability_scores",
             joinColumns = @JoinColumn(name = "character_id")
@@ -59,8 +61,27 @@ public class CharacterSheet
     @Column(name = "score")
     private Map<Ability, Integer> abilityScores;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "character_notes",
+            joinColumns = @JoinColumn(name = "character_id")
+    )
+    @MapKeyColumn(name = "title")
+    @Column(name = "note", columnDefinition = "TEXT")
+    private Map<String, String> notes; // TODO Eligible for refactor: Create separate Note entity with timestamps, ordering, and per-note access control
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public CharacterSheet(User user, String name, Race race, Subrace subrace, Set<Language> languages, Map<Ability, Integer> abilityScores)
+    {
+        this.user = user;
+        this.name = name;
+        this.race = race;
+        this.subrace = subrace;
+        this.languages = languages;
+        this.abilityScores = abilityScores;
+    }
 
     @PrePersist
     protected void onCreate()
@@ -79,10 +100,7 @@ public class CharacterSheet
 
     private String normalizeName(String name)
     {
-        if (name == null || name.isBlank())
-        {
-            throw new IllegalArgumentException("Character name cannot be blank");
-        }
+        Validator.notNullOrBlank(name);
         return name.trim();
     }
 }
