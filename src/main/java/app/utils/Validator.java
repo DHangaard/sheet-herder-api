@@ -28,6 +28,14 @@ public final class Validator
         }
     }
 
+    public static void notBlank(String value)
+    {
+        if (value != null && value.isBlank())
+        {
+            throw new ValidationException("String cannot be blank");
+        }
+    }
+
     public static <T> void notEmpty(List<T> objects)
     {
         if (objects == null || objects.isEmpty())
