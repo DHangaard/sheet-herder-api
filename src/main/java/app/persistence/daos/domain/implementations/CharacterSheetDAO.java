@@ -98,7 +98,7 @@ public class CharacterSheetDAO implements ICharacterSheetDAO
     }
 
     @Override
-    public List<CharacterSheet> findAllByUser(User user)
+    public List<CharacterSheet> getAllByUser(User user)
     {
         try (EntityManager em = emf.createEntityManager())
         {

@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface ICharacterSheetDAO extends IDAO<CharacterSheet>
 {
-    List<CharacterSheet> findAllByUser(User user);
+    List<CharacterSheet> getAllByUser(User user);
 }
