@@ -6,7 +6,6 @@ import java.util.Map;
 import java.util.Set;
 
 public record UpdateCharacterSheetDTO(
-        Long id,
         String name,
         Long raceId,
         Long subraceId,
