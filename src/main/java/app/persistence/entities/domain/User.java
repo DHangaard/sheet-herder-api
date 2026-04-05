@@ -2,6 +2,7 @@ package app.persistence.entities.domain;
 
 import app.persistence.entities.IEntity;
 import app.security.enums.Role;
+import app.utils.Validator;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -88,10 +89,7 @@ public class User implements IEntity
 
     private String normalizeName(String name)
     {
-        if (name == null || name.isBlank())
-        {
-            throw new IllegalArgumentException("Username cannot be blank");
-        }
+        Validator.notNullOrBlank(name);
         return name.trim();
     }
 }
