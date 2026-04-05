@@ -66,7 +66,7 @@ class CharacterSheetDAOTest
         }
 
         @Test
-        @DisplayName("Should throw exception on duplicate name for same user")
+        @DisplayName("Should throw DatabaseException on duplicate name for same user")
         void createDuplicateName()
         {
             User john = (User) seeded.get("john");
@@ -132,7 +132,7 @@ class CharacterSheetDAOTest
         }
 
         @Test
-        @DisplayName("Should throw exception on duplicate name for same user")
+        @DisplayName("Should throw DatabaseException on duplicate name for same user")
         void updateDuplicateName()
         {
             CharacterSheet johnSheet1 = (CharacterSheet) seeded.get("johnSheet1");
@@ -148,7 +148,7 @@ class CharacterSheetDAOTest
     class Delete
     {
         @Test
-        @DisplayName("Should delete character sheet and throw when fetched afterwards")
+        @DisplayName("Should delete character sheet and throw NotFoundException when fetched afterwards")
         void delete()
         {
             CharacterSheet johnSheet1 = (CharacterSheet) seeded.get("johnSheet1");

@@ -8,9 +8,7 @@ import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -39,6 +37,9 @@ public class User implements IEntity
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private Set<Role> roles = new HashSet<>(Set.of(Role.USER));
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<CharacterSheet> characterSheets = new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
