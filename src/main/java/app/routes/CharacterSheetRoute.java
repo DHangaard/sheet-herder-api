@@ -21,7 +21,7 @@ public class CharacterSheetRoute
         {
             path("/character-sheets", () ->
             {
-                get(characterSheetController::findAllByUser, Role.USER);
+                get(characterSheetController::getAllByUser, Role.USER);
                 get("/{id}", characterSheetController::getById, Role.USER);
                 post("/", characterSheetController::create, Role.USER);
                 put("/{id}", characterSheetController::update, Role.USER);
