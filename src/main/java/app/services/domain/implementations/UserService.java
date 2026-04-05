@@ -58,7 +58,7 @@ public class UserService implements IUserService
                     .filter(user -> !user.getId().equals(excludeId))
                     .ifPresent(user ->
                     {
-                        throw new ConflictException("Email already in use");
+                        throw new ConflictException("The chosen email is not available: " + email);
                     });
 
         if (username != null)
@@ -66,7 +66,7 @@ public class UserService implements IUserService
                     .filter(user -> !user.getId().equals(excludeId))
                     .ifPresent(user ->
                     {
-                        throw new ConflictException("Username already in use");
+                        throw new ConflictException("The chosen username is not available: " + username);
                     });
     }
 
@@ -80,16 +80,19 @@ public class UserService implements IUserService
     {
         if (dto.email() != null)
         {
+            Validator.validEmail(dto.email());
             user.setEmail(dto.email());
         }
 
         if (dto.username() != null)
         {
+            Validator.validUsername(dto.username());
             user.setUsername(dto.username());
         }
 
         if (dto.password() != null)
         {
+            Validator.validPassword(dto.password());
             user.setHashedPassword(PasswordUtil.hashPassword(dto.password()));
         }
 
