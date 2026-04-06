@@ -21,17 +21,8 @@ public class Campaign implements IEntity
     @EqualsAndHashCode.Include
     private Long id;
 
-    // private User gameMaster;
-
-    // @Column(unique = true)
-    // private List<CharacterSheet> players;
-    // private Map<String, String> gameMasterNotes; // TODO Maybe another Key?
-    // private Map<String, String> sessionLogs; // TODO Maybe another Key?
-
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
-
-    // public Campaign(User gameMaster) { this.gameMaster = gameMaster; }
 
     @PrePersist
     protected void onCreate()

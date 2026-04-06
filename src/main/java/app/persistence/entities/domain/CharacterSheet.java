@@ -127,21 +127,3 @@ public class CharacterSheet implements IEntity
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
     }
 }
-
-// Implement Character Sheet from Dungeons & Dragons 5th Edition (2024)
-
-// private String appearance;
-// private int level;
-// private int armorClass;
-// private int hitPoints;
-// private String hitDice; // TODO Should dice be a class?
-// private Set<String, Feat> feats; // TODO Set or Map?
-// private boolean heroicInspiration;
-// private CharacterClass characterClass;
-// private CharacterOrigin characterOrigin;
-// private Map<String, Proficiency> proficiencies; // TODO Set or Map?
-// private Background background;
-// private Set<String, AbilityScore> abilityScores;
-// private Set<String, Spell> spells;
-// private Campaign campaign;
-// private Map<String, String> notes;
