@@ -19,8 +19,7 @@ import static org.hamcrest.Matchers.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class CharacterSheetControllerTest
 {
-    private static final int TEST_PORT = 7778;
-    private static final String BASE_URL = "http://localhost:" + TEST_PORT + "/api/v1";
+    private static final int TEST_PORT = 7779;
 
     private EntityManagerFactory emf;
     private Javalin app;
@@ -35,6 +34,7 @@ class CharacterSheetControllerTest
     {
         emf = HibernateTestConfig.getEntityManagerFactory();
         app = ApplicationConfig.startServer(TEST_PORT, emf);
+
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = TEST_PORT;
         RestAssured.basePath = "/api/v1";
@@ -66,7 +66,7 @@ class CharacterSheetControllerTest
                 .contentType(ContentType.JSON)
                 .body(Map.of("email", email, "password", password))
                 .when()
-                .post(BASE_URL + "/auth/login")
+                .post("/auth/login")
                 .then()
                 .statusCode(200)
                 .extract()
@@ -91,7 +91,7 @@ class CharacterSheetControllerTest
                     .header("Authorization", "Bearer " + johnToken)
                     .body(Map.of("name", "Gandalf"))
                     .when()
-                    .post(BASE_URL + "/character-sheets/")
+                    .post("/character-sheets/")
                     .then()
                     .statusCode(201)
                     .body("id", notNullValue())
@@ -106,7 +106,7 @@ class CharacterSheetControllerTest
                     .contentType(ContentType.JSON)
                     .body(Map.of("name", "Gandalf"))
                     .when()
-                    .post(BASE_URL + "/character-sheets/")
+                    .post("/character-sheets/")
                     .then()
                     .statusCode(401);
         }
@@ -120,7 +120,7 @@ class CharacterSheetControllerTest
                     .header("Authorization", "Bearer " + johnToken)
                     .body(Map.of("name", "Aragorn"))
                     .when()
-                    .post(BASE_URL + "/character-sheets/")
+                    .post("/character-sheets/")
                     .then()
                     .statusCode(409);
         }
@@ -134,7 +134,7 @@ class CharacterSheetControllerTest
                     .header("Authorization", "Bearer " + johnToken)
                     .body(Map.of("name", ""))
                     .when()
-                    .post(BASE_URL + "/character-sheets/")
+                    .post("/character-sheets/")
                     .then()
                     .statusCode(400);
         }
@@ -151,7 +151,7 @@ class CharacterSheetControllerTest
             given()
                     .header("Authorization", "Bearer " + johnToken)
                     .when()
-                    .get(BASE_URL + "/character-sheets/" + johnSheet1Id())
+                    .get("/character-sheets/" + johnSheet1Id())
                     .then()
                     .statusCode(200)
                     .body("id", equalTo((int) johnSheet1Id()))
@@ -164,7 +164,7 @@ class CharacterSheetControllerTest
         {
             given()
                     .when()
-                    .get(BASE_URL + "/character-sheets/" + johnSheet1Id())
+                    .get("/character-sheets/" + johnSheet1Id())
                     .then()
                     .statusCode(401);
         }
@@ -176,7 +176,7 @@ class CharacterSheetControllerTest
             given()
                     .header("Authorization", "Bearer " + mortenToken)
                     .when()
-                    .get(BASE_URL + "/character-sheets/" + johnSheet1Id())
+                    .get("/character-sheets/" + johnSheet1Id())
                     .then()
                     .statusCode(403);
         }
@@ -188,7 +188,7 @@ class CharacterSheetControllerTest
             given()
                     .header("Authorization", "Bearer " + johnToken)
                     .when()
-                    .get(BASE_URL + "/character-sheets/999999")
+                    .get("/character-sheets/999999")
                     .then()
                     .statusCode(404);
         }
@@ -207,7 +207,7 @@ class CharacterSheetControllerTest
                     .header("Authorization", "Bearer " + johnToken)
                     .body(Map.of("name", "Strider"))
                     .when()
-                    .put(BASE_URL + "/character-sheets/" + johnSheet1Id())
+                    .put("/character-sheets/" + johnSheet1Id())
                     .then()
                     .statusCode(200)
                     .body("id", equalTo((int) johnSheet1Id()))
@@ -222,7 +222,7 @@ class CharacterSheetControllerTest
                     .contentType(ContentType.JSON)
                     .body(Map.of("name", "Strider"))
                     .when()
-                    .put(BASE_URL + "/character-sheets/" + johnSheet1Id())
+                    .put("/character-sheets/" + johnSheet1Id())
                     .then()
                     .statusCode(401);
         }
@@ -236,7 +236,7 @@ class CharacterSheetControllerTest
                     .header("Authorization", "Bearer " + mortenToken)
                     .body(Map.of("name", "Strider"))
                     .when()
-                    .put(BASE_URL + "/character-sheets/" + johnSheet1Id())
+                    .put("/character-sheets/" + johnSheet1Id())
                     .then()
                     .statusCode(403);
         }
@@ -250,7 +250,7 @@ class CharacterSheetControllerTest
                     .header("Authorization", "Bearer " + johnToken)
                     .body(Map.of("name", ""))
                     .when()
-                    .put(BASE_URL + "/character-sheets/" + johnSheet1Id())
+                    .put("/character-sheets/" + johnSheet1Id())
                     .then()
                     .statusCode(400);
         }
@@ -267,7 +267,7 @@ class CharacterSheetControllerTest
             given()
                     .header("Authorization", "Bearer " + johnToken)
                     .when()
-                    .delete(BASE_URL + "/character-sheets/" + johnSheet1Id())
+                    .delete("/character-sheets/" + johnSheet1Id())
                     .then()
                     .statusCode(204);
         }
@@ -278,7 +278,7 @@ class CharacterSheetControllerTest
         {
             given()
                     .when()
-                    .delete(BASE_URL + "/character-sheets/" + johnSheet1Id())
+                    .delete("/character-sheets/" + johnSheet1Id())
                     .then()
                     .statusCode(401);
         }
@@ -290,7 +290,7 @@ class CharacterSheetControllerTest
             given()
                     .header("Authorization", "Bearer " + mortenToken)
                     .when()
-                    .delete(BASE_URL + "/character-sheets/" + johnSheet1Id())
+                    .delete("/character-sheets/" + johnSheet1Id())
                     .then()
                     .statusCode(403);
         }
@@ -307,7 +307,7 @@ class CharacterSheetControllerTest
             given()
                     .header("Authorization", "Bearer " + johnToken)
                     .when()
-                    .get(BASE_URL + "/character-sheets")
+                    .get("/character-sheets")
                     .then()
                     .statusCode(200)
                     .body("$", hasSize(2))
@@ -320,7 +320,7 @@ class CharacterSheetControllerTest
         {
             given()
                     .when()
-                    .get(BASE_URL + "/character-sheets")
+                    .get("/character-sheets")
                     .then()
                     .statusCode(401);
         }
@@ -332,7 +332,7 @@ class CharacterSheetControllerTest
             given()
                     .header("Authorization", "Bearer " + garyToken)
                     .when()
-                    .get(BASE_URL + "/character-sheets")
+                    .get("/character-sheets")
                     .then()
                     .statusCode(200)
                     .body("$", hasSize(0));

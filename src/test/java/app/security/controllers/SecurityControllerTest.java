@@ -18,8 +18,7 @@ import static org.hamcrest.Matchers.*;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class SecurityControllerTest
 {
-    private static final int TEST_PORT = 7777;
-    private static final String BASE_URL = "http://localhost:" + TEST_PORT + "/api/v1";
+    private static final int TEST_PORT = 7778;
 
     private EntityManagerFactory emf;
     private Javalin app;
@@ -29,6 +28,7 @@ class SecurityControllerTest
     {
         emf = HibernateTestConfig.getEntityManagerFactory();
         app = ApplicationConfig.startServer(TEST_PORT, emf);
+
         RestAssured.baseURI = "http://localhost";
         RestAssured.port = TEST_PORT;
         RestAssured.basePath = "/api/v1";
@@ -60,7 +60,7 @@ class SecurityControllerTest
                     .contentType(ContentType.JSON)
                     .body(Map.of("email", "new@test.com", "username", "new_user", "password", "Password_99"))
                     .when()
-                    .post(BASE_URL + "/auth/register")
+                    .post("/auth/register")
                     .then()
                     .statusCode(201)
                     .body("id", notNullValue())
@@ -75,7 +75,7 @@ class SecurityControllerTest
                     .contentType(ContentType.JSON)
                     .body(Map.of("email", "john@test.com", "username", "other_john", "password", "Password_99"))
                     .when()
-                    .post(BASE_URL + "/auth/register")
+                    .post("/auth/register")
                     .then()
                     .statusCode(409);
         }
@@ -88,7 +88,7 @@ class SecurityControllerTest
                     .contentType(ContentType.JSON)
                     .body(Map.of("email", "fake-john@test.com", "username", "john", "password", "Password_99"))
                     .when()
-                    .post(BASE_URL + "/auth/register")
+                    .post("/auth/register")
                     .then()
                     .statusCode(409);
         }
@@ -106,7 +106,7 @@ class SecurityControllerTest
                     .contentType(ContentType.JSON)
                     .body(Map.of("email", "john@test.com", "password", "Password_1"))
                     .when()
-                    .post(BASE_URL + "/auth/login")
+                    .post("/auth/login")
                     .then()
                     .statusCode(200)
                     .body("token", notNullValue());
@@ -120,7 +120,7 @@ class SecurityControllerTest
                     .contentType(ContentType.JSON)
                     .body(Map.of("email", "john@test.com", "password", "wrongpassword"))
                     .when()
-                    .post(BASE_URL + "/auth/login")
+                    .post("/auth/login")
                     .then()
                     .statusCode(401);
         }
@@ -133,7 +133,7 @@ class SecurityControllerTest
                     .contentType(ContentType.JSON)
                     .body(Map.of("email", "nobody@test.com", "password", "Password_1"))
                     .when()
-                    .post(BASE_URL + "/auth/login")
+                    .post("/auth/login")
                     .then()
                     .statusCode(401);
         }

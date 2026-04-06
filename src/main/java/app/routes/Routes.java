@@ -7,6 +7,7 @@ import static io.javalin.apibuilder.ApiBuilder.path;
 
 public class Routes
 {
+    private final HealthCheckRoute healthCheckRoute;
     private final LanguageRoute languageRoute;
     private final TraitRoute traitRoute;
     private final RaceRoute raceRoute;
@@ -15,14 +16,17 @@ public class Routes
     private final UserRoute userRoute;
     private final CharacterSheetRoute characterSheetRoute;
 
-    public Routes(LanguageRoute languageRoute,
-                  TraitRoute traitRoute,
-                  RaceRoute raceRoute,
-                  SubraceRoute subraceRoute,
-                  SecurityRoute securityRoute,
-                  UserRoute userRoute,
-                  CharacterSheetRoute characterSheetRoute)
+    public Routes(
+            HealthCheckRoute healthCheckRoute,
+            LanguageRoute languageRoute,
+            TraitRoute traitRoute,
+            RaceRoute raceRoute,
+            SubraceRoute subraceRoute,
+            SecurityRoute securityRoute,
+            UserRoute userRoute,
+            CharacterSheetRoute characterSheetRoute)
     {
+        this.healthCheckRoute = healthCheckRoute;
         this.languageRoute = languageRoute;
         this.traitRoute = traitRoute;
         this.raceRoute = raceRoute;
@@ -38,6 +42,7 @@ public class Routes
         {
             path("/api/v1", () ->
             {
+                healthCheckRoute.getRoutes().addEndpoints();
                 languageRoute.getRoutes().addEndpoints();
                 traitRoute.getRoutes().addEndpoints();
                 raceRoute.getRoutes().addEndpoints();

@@ -66,6 +66,7 @@ public class ApplicationConfig
     private static Routes buildRoutes(DIContainer diContainer)
     {
         return new Routes(
+                new HealthCheckRoute(diContainer.getHealthCheckController()),
                 new LanguageRoute(diContainer.getLanguageController()),
                 new TraitRoute(diContainer.getTraitController()),
                 new RaceRoute(diContainer.getRaceController()),
@@ -107,12 +108,22 @@ public class ApplicationConfig
     {
         config.requestLogger.http((ctx, ms) ->
         {
+            if (ctx.path().equals("/api/v1/health-check"))
+            {
+                return;
+            }
             if (ctx.status().getCode() >= 500)
+            {
                 log.error("{} {} - {} ({}ms)", ctx.method(), ctx.path(), ctx.status(), ms.longValue());
+            }
             else if (ctx.status().getCode() >= 400)
+            {
                 log.warn("{} {} - {} ({}ms)", ctx.method(), ctx.path(), ctx.status(), ms.longValue());
+            }
             else
+            {
                 log.info("{} {} - {} ({}ms)", ctx.method(), ctx.path(), ctx.status(), ms.longValue());
+            }
         });
     }
 

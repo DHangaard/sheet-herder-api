@@ -3,6 +3,7 @@ package app.config;
 import app.config.hibernate.HibernateConfig;
 import app.controllers.implementations.*;
 import app.controllers.interfaces.ICharacterSheetController;
+import app.controllers.interfaces.IHealthCheckController;
 import app.controllers.interfaces.IReferenceController;
 import app.controllers.interfaces.IUserController;
 import app.dtos.dnd.DNDLanguageDetailDTO;
@@ -84,6 +85,9 @@ public final class DIContainer
     private final ICharacterSheetService characterSheetService;
 
     @Getter
+    private final IHealthCheckController healthCheckController;
+
+    @Getter
     private final IReferenceController languageController;
     @Getter
     private final IReferenceController traitController;
@@ -127,6 +131,8 @@ public final class DIContainer
         this.securityService = new SecurityService(userDAO);
         this.userService = new UserService(userDAO);
         this.characterSheetService = new CharacterSheetService(characterSheetDAO, raceDAO, subraceDAO, languageDAO);
+
+        this.healthCheckController = new HealthCheckController(entityManagerFactory);
 
         this.languageController = new LanguageController(languageService);
         this.traitController = new TraitController(traitService);

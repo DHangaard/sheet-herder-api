@@ -5,6 +5,7 @@ import app.dtos.dnd.DNDRaceDetailDTO;
 import app.dtos.reference.RaceDTO;
 import app.services.reference.interfaces.IReferenceDataService;
 import io.javalin.http.Context;
+import io.javalin.http.HttpStatus;
 
 public class RaceController implements IReferenceController
 {
@@ -21,7 +22,7 @@ public class RaceController implements IReferenceController
         Long id = Long.parseLong(ctx.pathParam("id"));
         RaceDTO raceDTO = raceService.getById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Race with id " + id + " not found"));
-        ctx.status(200).json(raceDTO);
+        ctx.status(HttpStatus.OK).json(raceDTO);
     }
 
     @Override
@@ -30,12 +31,12 @@ public class RaceController implements IReferenceController
         String name = ctx.pathParam("name");
         RaceDTO raceDTO = raceService.getByName(name)
                 .orElseThrow(() -> new IllegalArgumentException("Race with name \"" + name + "\" not found"));
-        ctx.status(200).json(raceDTO);
+        ctx.status(HttpStatus.OK).json(raceDTO);
     }
 
     @Override
     public void getAll(Context ctx)
     {
-        ctx.status(200).json(raceService.getAll());
+        ctx.status(HttpStatus.OK).json(raceService.getAll());
     }
 }
