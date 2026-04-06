@@ -5,6 +5,7 @@ import app.dtos.dnd.DNDSubraceDetailDTO;
 import app.dtos.reference.SubraceDTO;
 import app.services.reference.interfaces.IReferenceDataService;
 import io.javalin.http.Context;
+import io.javalin.http.HttpStatus;
 
 public class SubraceController implements IReferenceController
 {
@@ -21,7 +22,7 @@ public class SubraceController implements IReferenceController
         Long id = Long.parseLong(ctx.pathParam("id"));
         SubraceDTO subraceDTO = subraceService.getById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Subrace with id " + id + " not found"));
-        ctx.status(200).json(subraceDTO);
+        ctx.status(HttpStatus.OK).json(subraceDTO);
     }
 
     @Override
@@ -30,12 +31,12 @@ public class SubraceController implements IReferenceController
         String name = ctx.pathParam("name");
         SubraceDTO subraceDTO = subraceService.getByName(name)
                 .orElseThrow(() -> new IllegalArgumentException("Subrace with name \"" + name + "\" not found"));
-        ctx.status(200).json(subraceDTO);
+        ctx.status(HttpStatus.OK).json(subraceDTO);
     }
 
     @Override
     public void getAll(Context ctx)
     {
-        ctx.status(200).json(subraceService.getAll());
+        ctx.status(HttpStatus.OK).json(subraceService.getAll());
     }
 }
