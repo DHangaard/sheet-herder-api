@@ -11,9 +11,9 @@ public final class HibernateTestConfig {
     private HibernateTestConfig() {}
 
     public static EntityManagerFactory getEntityManagerFactory() {
-        if (emf == null) {
+        if (emf == null || !emf.isOpen()) {
             synchronized (HibernateTestConfig.class) {
-                if (emf == null) {
+                if (emf == null || !emf.isOpen()) {
                     emf = HibernateEmfBuilder.build(buildProps());
                 }
             }
