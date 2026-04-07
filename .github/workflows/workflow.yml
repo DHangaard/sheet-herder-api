@@ -41,3 +41,15 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/sheet-herder:latest
+
+      - name: Trigger Watchtower webhook
+        env:
+          WATCHTOWER_SSH_KEY: ${{ secrets.WATCHTOWER_SSH_KEY }}
+          WATCHTOWER_DROPLET_IP: ${{ secrets.WATCHTOWER_DROPLET_IP }}
+          WATCHTOWER_DROPLET_USER: ${{ secrets.WATCHTOWER_DROPLET_USER }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$WATCHTOWER_SSH_KEY" > ~/.ssh/watchtower_deploy
+          chmod 600 ~/.ssh/watchtower_deploy
+          ssh-keyscan -H "$WATCHTOWER_DROPLET_IP" >> ~/.ssh/known_hosts
+          ssh -i ~/.ssh/watchtower_deploy "$WATCHTOWER_DROPLET_USER@$WATCHTOWER_DROPLET_IP"
