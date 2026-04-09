@@ -17,6 +17,6 @@ public class HealthCheckRoute
 
     public EndpointGroup getRoutes()
     {
-        return () -> get("/health-check", healthCheckController::healthCheck, Role.ANYONE);
+        return () -> get("health-check", healthCheckController::healthCheck, Role.ANYONE);
     }
 }

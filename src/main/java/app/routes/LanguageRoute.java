@@ -20,11 +20,11 @@ public class LanguageRoute
     {
         return () ->
         {
-            path("/languages", () ->
+            path("languages", () ->
             {
                 get(languageController::getAll, Role.ANYONE);
-                get("/id/{id}", languageController::getById, Role.ANYONE);
-                get("/name/{name}", languageController::getByName, Role.ANYONE);
+                get("{id}", languageController::getById, Role.ANYONE);
+                get("name/{name}", languageController::getByName, Role.ANYONE);
             });
         };
     }

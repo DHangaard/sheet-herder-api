@@ -20,11 +20,11 @@ public class RaceRoute
     {
         return () ->
         {
-            path("/races", () ->
+            path("races", () ->
             {
                 get(raceController::getAll, Role.ANYONE);
-                get("/id/{id}", raceController::getById, Role.ANYONE);
-                get("/name/{name}", raceController::getByName, Role.ANYONE);
+                get("{id}", raceController::getById, Role.ANYONE);
+                get("name/{name}", raceController::getByName, Role.ANYONE);
             });
         };
     }

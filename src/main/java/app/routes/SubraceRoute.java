@@ -20,11 +20,11 @@ public class SubraceRoute
     {
         return () ->
         {
-            path("/subraces", () ->
+            path("subraces", () ->
             {
                 get(subraceController::getAll, Role.ANYONE);
-                get("/id/{id}", subraceController::getById, Role.ANYONE);
-                get("/name/{name}", subraceController::getByName, Role.ANYONE);
+                get("{id}", subraceController::getById, Role.ANYONE);
+                get("name/{name}", subraceController::getByName, Role.ANYONE);
             });
         };
     }

@@ -19,13 +19,13 @@ public class CharacterSheetRoute
     {
         return () ->
         {
-            path("/character-sheets", () ->
+            path("character-sheets", () ->
             {
                 get(characterSheetController::getAllByUser, Role.USER);
-                get("/{id}", characterSheetController::getById, Role.USER);
-                post("/", characterSheetController::create, Role.USER);
-                put("/{id}", characterSheetController::update, Role.USER);
-                delete("/{id}", characterSheetController::delete, Role.USER);
+                get("{id}", characterSheetController::getById, Role.USER);
+                post("", characterSheetController::create, Role.USER);
+                put("{id}", characterSheetController::update, Role.USER);
+                delete("{id}", characterSheetController::delete, Role.USER);
             });
         };
     }
