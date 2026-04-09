@@ -79,7 +79,7 @@ class CharacterSheetControllerTest
     }
 
     @Nested
-    @DisplayName("POST /character-sheets/")
+    @DisplayName("POST /character-sheets")
     class Create
     {
         @Test
@@ -145,7 +145,7 @@ class CharacterSheetControllerTest
     class GetByID
     {
         @Test
-        @DisplayName("Should return correct character sheet by id")
+        @DisplayName("Should return 200 correct character sheet by id")
         void getById()
         {
             given()
@@ -301,7 +301,7 @@ class CharacterSheetControllerTest
     class GetAllByUser
     {
         @Test
-        @DisplayName("Should return only sheets belonging to the authenticated user")
+        @DisplayName("Should return 200 and only sheets belonging to the authenticated user")
         void getAllByUser()
         {
             given()
@@ -326,7 +326,7 @@ class CharacterSheetControllerTest
         }
 
         @Test
-        @DisplayName("Should return empty list when user has no sheets")
+        @DisplayName("Should return 200 and empty list when user has no sheets")
         void getAllByUserEmpty()
         {
             given()
