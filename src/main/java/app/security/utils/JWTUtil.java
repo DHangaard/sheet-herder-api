@@ -68,7 +68,7 @@ public class JWTUtil {
         }
     }
 
-    public static UserSecurityDTO parseToken(String token) throws TokenVerificationException
+    public static UserSecurityDTO parseToken(String token)
     {
         try
         {
