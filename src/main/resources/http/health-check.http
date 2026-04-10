@@ -1,2 +1,0 @@
-### Health check
-GET {{url}}/health-check
