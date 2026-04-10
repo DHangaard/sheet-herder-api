@@ -3,6 +3,7 @@ package app.integrations;
 import app.dtos.dnd.*;
 import app.exceptions.ExternalApiException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.net.URI;
@@ -10,10 +11,11 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+@Slf4j
 public class DNDClient implements IDNDClient
 {
-    private HttpClient client;
-    private ObjectMapper objectMapper;
+    private final HttpClient client;
+    private final ObjectMapper objectMapper;
 
     public DNDClient(HttpClient client, ObjectMapper objectMapper)
     {
@@ -24,128 +26,66 @@ public class DNDClient implements IDNDClient
     @Override
     public DNDRaceResultDTO fetchAllRaces(String url)
     {
-        HttpRequest request = buildRequest(url);
-        try
-        {
-            String response = getResponse(request);
-            DNDRaceResultDTO dndRaceResultDTO = objectMapper.readValue(response, DNDRaceResultDTO.class);
-            return dndRaceResultDTO;
-        }
-        catch (IOException | InterruptedException e)
-        {
-            throw new RuntimeException(e);
-        }
+        return fetch(url, DNDRaceResultDTO.class);
     }
 
     @Override
     public DNDSubraceResultDTO fetchAllSubraces(String url)
     {
-        HttpRequest request = buildRequest(url);
-        try
-        {
-            String response = getResponse(request);
-            DNDSubraceResultDTO dndSubraceResultDTO = objectMapper.readValue(response, DNDSubraceResultDTO.class);
-            return dndSubraceResultDTO;
-        }
-        catch (IOException | InterruptedException e)
-        {
-            throw new RuntimeException(e);
-        }
+        return fetch(url, DNDSubraceResultDTO.class);
     }
 
     @Override
     public DNDTraitResultDTO fetchAllTraits(String url)
     {
-        HttpRequest request = buildRequest(url);
-        try
-        {
-            String response = getResponse(request);
-            DNDTraitResultDTO dndTraitResultDTO = objectMapper.readValue(response, DNDTraitResultDTO.class);
-            return dndTraitResultDTO;
-        }
-        catch (IOException | InterruptedException e)
-        {
-            throw new RuntimeException(e);
-        }
+        return fetch(url, DNDTraitResultDTO.class);
     }
 
     @Override
     public DNDLanguageResultDTO fetchAllLanguages(String url)
     {
-        HttpRequest request = buildRequest(url);
-        try
-        {
-            String response = getResponse(request);
-            DNDLanguageResultDTO dndLanguageResultDTO = objectMapper.readValue(response, DNDLanguageResultDTO.class);
-            return dndLanguageResultDTO;
-        }
-        catch (IOException | InterruptedException e)
-        {
-            throw new RuntimeException(e);
-        }
+        return fetch(url, DNDLanguageResultDTO.class);
     }
 
     @Override
     public DNDRaceDetailDTO fetchRaceDetails(String url)
     {
-        HttpRequest request = buildRequest(url);
-        try
-        {
-            String response = getResponse(request);
-            DNDRaceDetailDTO dndRaceDetailDTO = objectMapper.readValue(response, DNDRaceDetailDTO.class);
-            return dndRaceDetailDTO;
-        }
-        catch (IOException | InterruptedException e)
-        {
-            throw new RuntimeException(e);
-        }
+        return fetch(url, DNDRaceDetailDTO.class);
     }
 
     @Override
     public DNDSubraceDetailDTO fetchSubraceDetails(String url)
     {
-        HttpRequest request = buildRequest(url);
-        try
-        {
-            String response = getResponse(request);
-            DNDSubraceDetailDTO dndSubraceDetailDTO = objectMapper.readValue(response, DNDSubraceDetailDTO.class);
-            return dndSubraceDetailDTO;
-        }
-        catch (IOException | InterruptedException e)
-        {
-            throw new RuntimeException(e);
-        }
+        return fetch(url, DNDSubraceDetailDTO.class);
     }
 
     @Override
     public DNDTraitDetailDTO fetchTraitDetails(String url)
     {
-        HttpRequest request = buildRequest(url);
-        try
-        {
-            String response = getResponse(request);
-            DNDTraitDetailDTO dndTraitDetailDTO = objectMapper.readValue(response, DNDTraitDetailDTO.class);
-            return dndTraitDetailDTO;
-        }
-        catch (IOException | InterruptedException e)
-        {
-            throw new RuntimeException(e);
-        }
+        return fetch(url, DNDTraitDetailDTO.class);
     }
 
     @Override
     public DNDLanguageDetailDTO fetchLanguageDetails(String url)
     {
+        return fetch(url, DNDLanguageDetailDTO.class);
+    }
+
+    private <T> T fetch(String url, Class<T> responseType)
+    {
         HttpRequest request = buildRequest(url);
         try
         {
-            String response = getResponse(request);
-            DNDLanguageDetailDTO dndLanguageDetailDTO = objectMapper.readValue(response, DNDLanguageDetailDTO.class);
-            return dndLanguageDetailDTO;
+            String body = getResponse(request);
+            return objectMapper.readValue(body, responseType);
         }
         catch (IOException | InterruptedException e)
         {
-            throw new RuntimeException(e);
+            if (e instanceof InterruptedException)
+                Thread.currentThread().interrupt();
+
+            log.error("Failed to fetch from DnD 5E API at {}: {}", url, e.getMessage(), e);
+            throw new ExternalApiException("DnD 5E API is unavailable");
         }
     }
 
@@ -154,7 +94,8 @@ public class DNDClient implements IDNDClient
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         if (response.statusCode() != 200)
         {
-            throw new ExternalApiException(response.statusCode(), "DnD5Eapi returned error code: " + response.statusCode());
+            log.error("DnD 5E API returned unexpected status {} for {}", response.statusCode(), request.uri());
+            throw new ExternalApiException("DnD 5E API is unavailable");
         }
         return response.body();
     }

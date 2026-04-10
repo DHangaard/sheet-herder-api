@@ -1,6 +1,7 @@
 package app.exceptions;
 
-public class TokenVerificationException extends RuntimeException {
+public class TokenVerificationException extends RuntimeException
+{
     public TokenVerificationException(String message)
     {
         super(message);

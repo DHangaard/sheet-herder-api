@@ -18,7 +18,6 @@ public class Campaign implements IEntity
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    @EqualsAndHashCode.Include
     private Long id;
 
     private LocalDateTime createdAt;

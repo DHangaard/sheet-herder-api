@@ -53,7 +53,8 @@ public class DNDFetchingService implements IDNDFetchingService
         DNDRaceResultDTO resultDTO = dndClient.fetchAllRaces(ALL_RACES_URL);
 
         List<Callable<DNDRaceDetailDTO>> tasks = resultDTO.races().stream()
-                .map(race -> {
+                .map(race ->
+                {
                     String url = String.format(BASE_URL, race.url());
                     return (Callable<DNDRaceDetailDTO>) () -> dndClient.fetchRaceDetails(url);
                 })
@@ -68,7 +69,8 @@ public class DNDFetchingService implements IDNDFetchingService
         DNDSubraceResultDTO resultDTO = dndClient.fetchAllSubraces(ALL_SUBRACES_URL);
 
         List<Callable<DNDSubraceDetailDTO>> tasks = resultDTO.subraces().stream()
-                .map(subrace -> {
+                .map(subrace ->
+                {
                     String url = String.format(BASE_URL, subrace.url());
                     return (Callable<DNDSubraceDetailDTO>) () -> dndClient.fetchSubraceDetails(url);
                 })
@@ -83,7 +85,8 @@ public class DNDFetchingService implements IDNDFetchingService
         DNDTraitResultDTO resultDTO = dndClient.fetchAllTraits(ALL_TRAITS_URL);
 
         List<Callable<DNDTraitDetailDTO>> tasks = resultDTO.traits().stream()
-                .map(trait -> {
+                .map(trait ->
+                {
                     String url = String.format(BASE_URL, trait.url());
                     return (Callable<DNDTraitDetailDTO>) () -> dndClient.fetchTraitDetails(url);
                 })
@@ -98,7 +101,8 @@ public class DNDFetchingService implements IDNDFetchingService
         DNDLanguageResultDTO resultDTO = dndClient.fetchAllLanguages(ALL_LANGUAGES_URL);
 
         List<Callable<DNDLanguageDetailDTO>> tasks = resultDTO.languages().stream()
-                .map(language -> {
+                .map(language ->
+                {
                     String url = String.format(BASE_URL, language.url());
                     return (Callable<DNDLanguageDetailDTO>) () -> dndClient.fetchLanguageDetails(url);
                 })

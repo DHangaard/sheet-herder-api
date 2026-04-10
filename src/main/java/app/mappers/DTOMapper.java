@@ -114,7 +114,7 @@ public class DTOMapper
                 characterSheet.getNotes(),
                 characterSheet.getCreatedAt(),
                 characterSheet.getUpdatedAt()
-                );
+        );
     }
 
     private static <T, R> Set<R> nullSafeSet(Set<T> source, Function<T, R> mapper)

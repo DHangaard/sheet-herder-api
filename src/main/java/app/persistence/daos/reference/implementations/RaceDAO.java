@@ -61,7 +61,7 @@ public class RaceDAO implements IReferenceDAO<Race>
         }
         catch (PersistenceException e)
         {
-            throw new DatabaseException("Failed to find race with name: " + id, e);
+            throw new DatabaseException("Failed to find race with id: " + id, e);
         }
     }
 
@@ -90,23 +90,24 @@ public class RaceDAO implements IReferenceDAO<Race>
     {
         try (EntityManager em = emf.createEntityManager())
         {
-            em.getTransaction().begin();
-            Race foundRace = em.find(Race.class, id);
-            if (foundRace == null)
-            {
-                throw new NotFoundException("Race not found - id: " + id);
-            }
             try
             {
-                em.remove(foundRace);
+                Race found = em.find(Race.class, id);
+                validateNull(found, id);
+                em.getTransaction().begin();
+                em.remove(found);
                 em.getTransaction().commit();
-                return foundRace.getId();
+                return found.getId();
             }
             catch (PersistenceException e)
             {
                 rollback(em);
                 throw new DatabaseException("Failed to delete race with id: " + id, e);
             }
+        }
+        catch (PersistenceException e)
+        {
+            throw new DatabaseException("Failed to find race with id: " + id, e);
         }
     }
 
@@ -298,6 +299,14 @@ public class RaceDAO implements IReferenceDAO<Race>
         existing.setContentHash(incoming.getContentHash());
 
         return existing;
+    }
+
+    private <T> void validateNull(Race race, T searchParameter)
+    {
+        if (race == null)
+        {
+            throw new NotFoundException("Race not found: " + searchParameter);
+        }
     }
 
     private void rollback(EntityManager em)

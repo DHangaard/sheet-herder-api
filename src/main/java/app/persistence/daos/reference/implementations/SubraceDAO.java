@@ -92,23 +92,24 @@ public class SubraceDAO implements IReferenceDAO<Subrace>
     {
         try (EntityManager em = emf.createEntityManager())
         {
-            em.getTransaction().begin();
-            Subrace foundSubrace = em.find(Subrace.class, id);
-            if (foundSubrace == null)
-            {
-                throw new NotFoundException("Subrace not found - id: " + id);
-            }
             try
             {
-                em.remove(foundSubrace);
+                Subrace found = em.find(Subrace.class, id);
+                validateNull(found, id);
+                em.getTransaction().begin();
+                em.remove(found);
                 em.getTransaction().commit();
-                return foundSubrace.getId();
+                return found.getId();
             }
             catch (PersistenceException e)
             {
                 rollback(em);
-                throw new DatabaseException("Failed to delete subrace with id", e);
+                throw new DatabaseException("Failed to delete subrace with id: " + id, e);
             }
+        }
+        catch (PersistenceException e)
+        {
+            throw new DatabaseException("Failed to find subrace with id: " + id, e);
         }
     }
 
@@ -302,6 +303,14 @@ public class SubraceDAO implements IReferenceDAO<Subrace>
         existing.setContentHash(incoming.getContentHash());
 
         return existing;
+    }
+
+    private <T> void validateNull(Subrace subrace, T searchParameter)
+    {
+        if (subrace == null)
+        {
+            throw new NotFoundException("Subrace not found: " + searchParameter);
+        }
     }
 
     private void rollback(EntityManager em)

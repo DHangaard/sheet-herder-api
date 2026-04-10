@@ -11,6 +11,7 @@ import app.security.dtos.UserSecurityDTO;
 import app.security.services.ISecurityService;
 import app.security.utils.JWTUtil;
 import io.javalin.http.Context;
+import io.javalin.http.HandlerType;
 import io.javalin.http.HttpStatus;
 
 import java.util.Set;
@@ -46,7 +47,7 @@ public class SecurityController implements ISecurityController
     public void authenticate(Context ctx)
     {
         // CORS preflight request
-        if (ctx.method().toString().equals("OPTIONS"))
+        if (ctx.method() == HandlerType.OPTIONS)
         {
             return;
         }

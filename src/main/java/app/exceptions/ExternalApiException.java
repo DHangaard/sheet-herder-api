@@ -1,9 +1,11 @@
 package app.exceptions;
 
+import io.javalin.http.HttpStatus;
+
 public class ExternalApiException extends ApiException
 {
-    public ExternalApiException(int code, String message)
+    public ExternalApiException(String message)
     {
-        super(code, message);
+        super(HttpStatus.BAD_GATEWAY.getCode(), message);
     }
 }

@@ -13,7 +13,10 @@ Authorization: Bearer {{token}}
   "name": "Aragorn",
   "raceId": 6,
   "subraceId": null,
-  "languageIds": [8, 11],
+  "languageIds": [
+    8,
+    11
+  ],
   "abilityScores": {
     "STR": 15,
     "DEX": 12,
@@ -33,7 +36,10 @@ Authorization: Bearer {{token}}
   "name": "Legolas",
   "raceId": 7,
   "subraceId": 2,
-  "languageIds": [8, 11],
+  "languageIds": [
+    8,
+    11
+  ],
   "abilityScores": {
     "STR": 10,
     "DEX": 18,
@@ -53,7 +59,9 @@ Authorization: Bearer {{token}}
   "name": "Aragorn",
   "raceId": 6,
   "subraceId": null,
-  "languageIds": [8],
+  "languageIds": [
+    8
+  ],
   "abilityScores": {
     "STR": 10,
     "DEX": 10,
@@ -73,7 +81,9 @@ Authorization: Bearer {{token}}
   "name": "Invalid",
   "raceId": null,
   "subraceId": 2,
-  "languageIds": [8],
+  "languageIds": [
+    8
+  ],
   "abilityScores": {
     "STR": 10,
     "DEX": 10,
@@ -93,7 +103,9 @@ Authorization: Bearer {{token}}
   "name": "Invalid2",
   "raceId": 6,
   "subraceId": 2,
-  "languageIds": [8],
+  "languageIds": [
+    8
+  ],
   "abilityScores": {
     "STR": 10,
     "DEX": 10,
@@ -125,7 +137,10 @@ Authorization: Bearer {{token}}
   "name": "Aragorn",
   "raceId": 1,
   "subraceId": null,
-  "languageIds": [1, 2],
+  "languageIds": [
+    1,
+    2
+  ],
   "abilityScores": {
     "STR": 15,
     "DEX": 12,

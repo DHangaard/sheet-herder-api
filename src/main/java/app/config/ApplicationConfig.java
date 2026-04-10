@@ -94,13 +94,25 @@ public class ApplicationConfig
         config.routes.exception(ApiException.class, (e, ctx) ->
         {
             log.warn("{} {} - {}", ctx.method(), ctx.path(), e.getMessage());
-            ctx.status(e.getCode()).json(Map.of("status", e.getCode(), "message", e.getMessage()));
+            ctx.status(e.getCode())
+                    .json(Map.of("status", e.getCode(),
+                            "message", e.getMessage()));
+        });
+
+        config.routes.exception(NumberFormatException.class, (e, ctx) ->
+        {
+            log.warn("{} {} - Invalid number format: {}", ctx.method(), ctx.path(), e.getMessage());
+            ctx.status(HttpStatus.BAD_REQUEST.getCode())
+                    .json(Map.of("status", HttpStatus.BAD_REQUEST.getCode(),
+                            "message", "Invalid ID format: expected a number"));
         });
 
         config.routes.exception(Exception.class, (e, ctx) ->
         {
             log.error("{} {} - Unhandled exception", ctx.method(), ctx.path(), e);
-            ctx.status(HttpStatus.INTERNAL_SERVER_ERROR.getCode()).json(Map.of("status", HttpStatus.INTERNAL_SERVER_ERROR.getCode(), "message", "Internal server error"));
+            ctx.status(HttpStatus.INTERNAL_SERVER_ERROR.getCode())
+                    .json(Map.of("status", HttpStatus.INTERNAL_SERVER_ERROR.getCode(),
+                            "message", "Internal server error"));
         });
     }
 

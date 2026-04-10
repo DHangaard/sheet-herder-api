@@ -28,7 +28,12 @@ public final class ThreadUtil
                 result.add(future.get());
             }
         }
-        catch (InterruptedException | ExecutionException e)
+        catch (InterruptedException e)
+        {
+            Thread.currentThread().interrupt();
+            throw new ConcurrentExecutionException("Failed to fetch data concurrently", e);
+        }
+        catch (ExecutionException e)
         {
             throw new ConcurrentExecutionException("Failed to fetch data concurrently", e);
         }

@@ -10,12 +10,17 @@ import java.util.Properties;
 
 // This class is just a factory that converts properties into an EntityManagerFactory
 
-final class HibernateEmfBuilder {
+final class HibernateEmfBuilder
+{
 
-    private HibernateEmfBuilder() {}
+    private HibernateEmfBuilder()
+    {
+    }
 
-    static EntityManagerFactory build(Properties props) {
-        try {
+    static EntityManagerFactory build(Properties props)
+    {
+        try
+        {
             Configuration configuration = new Configuration();
             configuration.setProperties(props);
 
@@ -30,7 +35,9 @@ final class HibernateEmfBuilder {
             SessionFactory sf = configuration.buildSessionFactory(serviceRegistry);
             return sf.unwrap(EntityManagerFactory.class);
 
-        } catch (Throwable ex) {
+        }
+        catch (Throwable ex)
+        {
             System.err.println("Initial SessionFactory creation failed: " + ex);
             throw new ExceptionInInitializerError(ex);
         }

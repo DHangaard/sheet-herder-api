@@ -10,11 +10,15 @@ import app.persistence.entities.reference.Subrace;
 import app.persistence.entities.reference.Trait;
 import org.hibernate.cfg.Configuration;
 
-final class EntityRegistry {
+final class EntityRegistry
+{
 
-    private EntityRegistry() {}
+    private EntityRegistry()
+    {
+    }
 
-    static void registerEntities(Configuration configuration) {
+    static void registerEntities(Configuration configuration)
+    {
         configuration.addAnnotatedClass(User.class);
         configuration.addAnnotatedClass(CharacterSheet.class);
         configuration.addAnnotatedClass(Campaign.class);

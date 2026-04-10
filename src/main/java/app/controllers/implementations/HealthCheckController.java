@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class HealthCheckController implements IHealthCheckController
 {
-    EntityManagerFactory emf;
+    private final EntityManagerFactory emf;
 
     public HealthCheckController(EntityManagerFactory emf)
     {
@@ -20,10 +20,13 @@ public class HealthCheckController implements IHealthCheckController
     @Override
     public void healthCheck(Context ctx)
     {
-        try (EntityManager em = emf.createEntityManager()) {
+        try (EntityManager em = emf.createEntityManager())
+        {
             em.createNativeQuery("SELECT 1").getSingleResult();
             ctx.status(HttpStatus.OK).json("{\"status\": \"ok\"}");
-        } catch (Exception e) {
+        }
+        catch (Exception e)
+        {
             log.warn("Database health check failed: {}", e.getMessage());
             ctx.status(HttpStatus.SERVICE_UNAVAILABLE).json("{\"status\": \"unavailable\"}");
         }

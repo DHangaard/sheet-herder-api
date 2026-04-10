@@ -5,16 +5,23 @@ import jakarta.persistence.EntityManagerFactory;
 
 import java.util.Properties;
 
-public final class HibernateConfig {
+public final class HibernateConfig
+{
 
     private static volatile EntityManagerFactory emf;
 
-    private HibernateConfig() {}
+    private HibernateConfig()
+    {
+    }
 
-    public static EntityManagerFactory getEntityManagerFactory() {
-        if (emf == null) {
-            synchronized (HibernateConfig.class) {
-                if (emf == null) {
+    public static EntityManagerFactory getEntityManagerFactory()
+    {
+        if (emf == null)
+        {
+            synchronized (HibernateConfig.class)
+            {
+                if (emf == null)
+                {
                     emf = HibernateEmfBuilder.build(buildProps());
                 }
             }
@@ -22,28 +29,34 @@ public final class HibernateConfig {
         return emf;
     }
 
-    private static Properties buildProps() {
+    private static Properties buildProps()
+    {
         Properties props = HibernateBaseProperties.createBase();
 
         // Set to update in production, create in development
         props.put("hibernate.hbm2ddl.auto", "update");
 
-        if (System.getenv("DEPLOYED") != null) {
+        if (System.getenv("DEPLOYED") != null)
+        {
             setDeployedProperties(props);
-        } else {
+        }
+        else
+        {
             setDevProperties(props);
         }
         return props;
     }
 
-    private static void setDeployedProperties(Properties props) {
+    private static void setDeployedProperties(Properties props)
+    {
         String dbName = System.getenv("DB_NAME");
         props.setProperty("hibernate.connection.url", System.getenv("CONNECTION_STR") + dbName);
         props.setProperty("hibernate.connection.username", System.getenv("DB_USERNAME"));
         props.setProperty("hibernate.connection.password", System.getenv("DB_PASSWORD"));
     }
 
-    private static void setDevProperties(Properties props) {
+    private static void setDevProperties(Properties props)
+    {
         String dbName = ApplicationProperties.getRequired("DB_NAME");
         String username = ApplicationProperties.getRequired("DB_USERNAME");
         String password = ApplicationProperties.getRequired("DB_PASSWORD");

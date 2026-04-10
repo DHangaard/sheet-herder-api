@@ -80,20 +80,24 @@ public class CharacterSheetDAO implements ICharacterSheetDAO
     {
         try (EntityManager em = emf.createEntityManager())
         {
-            em.getTransaction().begin();
-            CharacterSheet foundCharacterSheet = em.find(CharacterSheet.class, id);
-            validateNull(foundCharacterSheet, id);
             try
             {
-                em.remove(foundCharacterSheet);
+                CharacterSheet found = em.find(CharacterSheet.class, id);
+                validateNull(found, id);
+                em.getTransaction().begin();
+                em.remove(found);
                 em.getTransaction().commit();
-                return foundCharacterSheet.getId();
+                return found.getId();
             }
             catch (PersistenceException e)
             {
                 rollback(em);
                 throw new DatabaseException("Failed to delete character sheet with id: " + id, e);
             }
+        }
+        catch (PersistenceException e)
+        {
+            throw new DatabaseException("Failed to find character sheet with id: " + id, e);
         }
     }
 

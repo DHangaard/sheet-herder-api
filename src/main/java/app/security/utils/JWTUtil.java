@@ -16,7 +16,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class JWTUtil {
+public class JWTUtil
+{
 
     private static final String ISSUER = System.getenv("JWT_ISSUER");
     private static final String SECRET = System.getenv("JWT_SECRET");
@@ -24,7 +25,8 @@ public class JWTUtil {
     private static final JWSSigner SIGNER;
     private static final JWSVerifier VERIFIER;
 
-    static {
+    static
+    {
         if (SECRET == null)
         {
             throw new ExceptionInInitializerError("JWT_SECRET environment variable is not set");
@@ -33,15 +35,20 @@ public class JWTUtil {
         {
             throw new ExceptionInInitializerError("JWT_SECRET must be at least 32 characters");
         }
-        try {
-            SIGNER   = new MACSigner(SECRET);
+        try
+        {
+            SIGNER = new MACSigner(SECRET);
             VERIFIER = new MACVerifier(SECRET);
-        } catch (JOSEException e) {
+        }
+        catch (JOSEException e)
+        {
             throw new ExceptionInInitializerError(e);
         }
     }
 
-    private JWTUtil() {}
+    private JWTUtil()
+    {
+    }
 
     public static String createToken(Long id, String username, Set<Role> roles) throws TokenCreationException
     {
@@ -100,6 +107,7 @@ public class JWTUtil {
             throw new TokenVerificationException("Invalid token", e);
         }
     }
+
     public static void validate()
     {
         if (SIGNER == null)

@@ -9,7 +9,10 @@ import java.util.Optional;
 public interface IUserDAO extends IDAO<User>
 {
     Optional<User> getByEmail(String email);
+
     Optional<User> getByUsername(String username);
+
     User addRole(Long id, Role role);
+
     User removeRole(Long id, Role role);
 }

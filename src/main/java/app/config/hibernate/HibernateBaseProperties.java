@@ -2,11 +2,15 @@ package app.config.hibernate;
 
 import java.util.Properties;
 
-final class HibernateBaseProperties {
+final class HibernateBaseProperties
+{
 
-    private HibernateBaseProperties() {}
+    private HibernateBaseProperties()
+    {
+    }
 
-    static Properties createBase() {
+    static Properties createBase()
+    {
         Properties props = new Properties();
         // Connection / Session
         props.put("hibernate.connection.driver_class", "org.postgresql.Driver");
