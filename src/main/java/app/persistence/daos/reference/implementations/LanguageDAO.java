@@ -47,12 +47,9 @@ public class LanguageDAO implements IReferenceDAO<Language>
     {
         try (EntityManager em = emf.createEntityManager())
         {
-            Language foundLanguage = em.find(Language.class, id);
-            if (foundLanguage == null)
-            {
-                throw new NotFoundException("Language not found - id: " + id);
-            }
-            return foundLanguage;
+            Language found = em.find(Language.class, id);
+            validateNull(found, id);
+            return found;
         }
         catch (PersistenceException e)
         {
@@ -85,23 +82,24 @@ public class LanguageDAO implements IReferenceDAO<Language>
     {
         try (EntityManager em = emf.createEntityManager())
         {
-            em.getTransaction().begin();
-            Language foundLanguage = em.find(Language.class, id);
-            if (foundLanguage == null)
-            {
-                throw new NotFoundException("Language not found - id: " + id);
-            }
             try
             {
-                em.remove(foundLanguage);
+                Language found = em.find(Language.class, id);
+                validateNull(found, id);
+                em.getTransaction().begin();
+                em.remove(found);
                 em.getTransaction().commit();
-                return foundLanguage.getId();
+                return found.getId();
             }
             catch (PersistenceException e)
             {
                 rollback(em);
                 throw new DatabaseException("Failed to delete language with id: " + id, e);
             }
+        }
+        catch (PersistenceException e)
+        {
+            throw new DatabaseException("Failed to find language with id: " + id, e);
         }
     }
 
@@ -282,6 +280,14 @@ public class LanguageDAO implements IReferenceDAO<Language>
         existing.setScript(incoming.getScript());
         existing.setContentHash(incoming.getContentHash());
         return existing;
+    }
+
+    private <T> void validateNull(Language language, T searchParameter)
+    {
+        if (language == null)
+        {
+            throw new NotFoundException("Language not found: " + searchParameter);
+        }
     }
 
     private void rollback(EntityManager em)

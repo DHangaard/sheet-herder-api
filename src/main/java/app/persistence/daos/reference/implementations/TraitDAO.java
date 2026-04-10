@@ -48,10 +48,7 @@ public class TraitDAO implements IReferenceDAO<Trait>
         try (EntityManager em = emf.createEntityManager())
         {
             Trait foundTrait = em.find(Trait.class, id);
-            if (foundTrait == null)
-            {
-                throw new NotFoundException("Trait not found - id: " + id);
-            }
+            validateNull(foundTrait, id);
             return foundTrait;
         }
         catch (PersistenceException e)
@@ -85,23 +82,24 @@ public class TraitDAO implements IReferenceDAO<Trait>
     {
         try (EntityManager em = emf.createEntityManager())
         {
-            em.getTransaction().begin();
-            Trait foundTrait = em.find(Trait.class, id);
-            if (foundTrait == null)
-            {
-                throw new NotFoundException("Trait not found - id: " + id);
-            }
             try
             {
-                em.remove(foundTrait);
+                Trait found = em.find(Trait.class, id);
+                validateNull(found, id);
+                em.getTransaction().begin();
+                em.remove(found);
                 em.getTransaction().commit();
-                return foundTrait.getId();
+                return found.getId();
             }
             catch (PersistenceException e)
             {
                 rollback(em);
                 throw new DatabaseException("Failed to delete trait with id: " + id, e);
             }
+        }
+        catch (PersistenceException e)
+        {
+            throw new DatabaseException("Failed to find trait with id: " + id, e);
         }
     }
 
@@ -279,6 +277,14 @@ public class TraitDAO implements IReferenceDAO<Trait>
         existing.setDescriptions(incoming.getDescriptions());
         existing.setContentHash(incoming.getContentHash());
         return existing;
+    }
+
+    private <T> void validateNull(Trait trait, T searchParameter)
+    {
+        if (trait == null)
+        {
+            throw new NotFoundException("Trait not found: " + searchParameter);
+        }
     }
 
     private void rollback(EntityManager em)
