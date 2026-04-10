@@ -3,6 +3,7 @@ package app.controllers.implementations;
 import app.controllers.interfaces.IReferenceController;
 import app.dtos.dnd.DNDRaceDetailDTO;
 import app.dtos.reference.RaceDTO;
+import app.exceptions.NotFoundException;
 import app.services.reference.interfaces.IReferenceDataService;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
@@ -21,7 +22,7 @@ public class RaceController implements IReferenceController
     {
         Long id = Long.parseLong(ctx.pathParam("id"));
         RaceDTO raceDTO = raceService.getById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Race with id " + id + " not found"));
+                .orElseThrow(() -> new NotFoundException("Race with id " + id + " not found"));
         ctx.status(HttpStatus.OK).json(raceDTO);
     }
 
@@ -30,7 +31,7 @@ public class RaceController implements IReferenceController
     {
         String name = ctx.pathParam("name");
         RaceDTO raceDTO = raceService.getByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("Race with name \"" + name + "\" not found"));
+                .orElseThrow(() -> new NotFoundException("Race with name \"" + name + "\" not found"));
         ctx.status(HttpStatus.OK).json(raceDTO);
     }
 

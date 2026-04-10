@@ -3,6 +3,7 @@ package app.controllers.implementations;
 import app.controllers.interfaces.IReferenceController;
 import app.dtos.dnd.DNDLanguageDetailDTO;
 import app.dtos.reference.LanguageDTO;
+import app.exceptions.NotFoundException;
 import app.services.reference.interfaces.IReferenceDataService;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
@@ -21,7 +22,7 @@ public class LanguageController implements IReferenceController
     {
         Long id = Long.parseLong(ctx.pathParam("id"));
         LanguageDTO languageDTO = languageService.getById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Language with id " + id + " not found"));
+                .orElseThrow(() -> new NotFoundException("Language with id " + id + " not found"));
         ctx.status(HttpStatus.OK).json(languageDTO);
     }
 
@@ -30,7 +31,7 @@ public class LanguageController implements IReferenceController
     {
         String name = ctx.pathParam("name");
         LanguageDTO languageDTO = languageService.getByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("Language with name \"" + name + "\" not found"));
+                .orElseThrow(() -> new NotFoundException("Language with name \"" + name + "\" not found"));
         ctx.status(HttpStatus.OK).json(languageDTO);
     }
 

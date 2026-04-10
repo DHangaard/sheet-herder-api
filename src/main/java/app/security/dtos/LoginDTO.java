@@ -1,6 +1,6 @@
 package app.security.dtos;
 
-public record LoginResponseDTO(
+public record LoginDTO(
         String token
 )
 {

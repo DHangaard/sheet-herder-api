@@ -3,6 +3,7 @@ package app.controllers.implementations;
 import app.controllers.interfaces.IReferenceController;
 import app.dtos.dnd.DNDTraitDetailDTO;
 import app.dtos.reference.TraitDTO;
+import app.exceptions.NotFoundException;
 import app.services.reference.interfaces.IReferenceDataService;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
@@ -21,7 +22,7 @@ public class TraitController implements IReferenceController
     {
         Long id = Long.parseLong(ctx.pathParam("id"));
         TraitDTO traitDTO = traitService.getById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Trait with id " + id + " not found"));
+                .orElseThrow(() -> new NotFoundException("Trait with id " + id + " not found"));
         ctx.status(HttpStatus.OK).json(traitDTO);
     }
 
@@ -30,7 +31,7 @@ public class TraitController implements IReferenceController
     {
         String name = ctx.pathParam("name");
         TraitDTO traitDTO = traitService.getByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("Trait with name \"" + name + "\" not found"));
+                .orElseThrow(() -> new NotFoundException("Trait with name \"" + name + "\" not found"));
         ctx.status(HttpStatus.OK).json(traitDTO);
     }
 

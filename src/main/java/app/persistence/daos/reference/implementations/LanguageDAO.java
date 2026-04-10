@@ -118,7 +118,7 @@ public class LanguageDAO implements IReferenceDAO<Language>
                     .setParameter("name", name)
                     .getResultStream()
                     .findFirst()
-                    .orElseThrow(() -> new EntityNotFoundException("Language with name \"" + name + "\" was not found"));
+                    .orElseThrow(() -> new NotFoundException("Language with name \"" + name + "\" was not found"));
         }
         catch (PersistenceException e)
         {

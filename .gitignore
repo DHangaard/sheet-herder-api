@@ -29,7 +29,7 @@ dist/
 !*.properties.example
 
 # Environment files
-.env*
+*.env*
 !.env.example
 
 # Secrets / keys
@@ -45,6 +45,9 @@ docker-compose.override.yml
 logs/
 *.log
 *.gz
+
+# Http request files
+*.http
 
 # === IDE ===
 # IntelliJ IDEA

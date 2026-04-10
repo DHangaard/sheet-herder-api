@@ -23,7 +23,18 @@ public class TestCleanDB
                     character_notes,
                     character_sheet,
                     user_roles,
-                    users
+                    users,
+                    trait_descriptions,
+                    trait,
+                    subrace_traits,
+                    subrace_ability_bonuses,
+                    subrace,
+                    race_traits,
+                    race_languages,
+                    race_ability_bonuses,
+                    race,
+                    language_typical_speakers,
+                    language
                 RESTART IDENTITY CASCADE
             """).executeUpdate();
             em.getTransaction().commit();

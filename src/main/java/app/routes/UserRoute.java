@@ -17,10 +17,10 @@ public class UserRoute
 
     public EndpointGroup getRoutes()
     {
-        return () -> path("/users", () ->
+        return () -> path("users", () ->
         {
-            put("/{id}", userController::update, Role.USER);
-            delete("/{id}", userController::delete, Role.USER);
+            put("{id}", userController::update, Role.USER);
+            delete("{id}", userController::delete, Role.USER);
         });
     }
 }

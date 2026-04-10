@@ -59,7 +59,7 @@ public class SubraceDAO implements IReferenceDAO<Subrace>
                     .setParameter("id", id)
                     .getResultStream()
                     .findFirst()
-                    .orElseThrow(() -> new EntityNotFoundException("Subrace with id " + id + " was not found"));
+                    .orElseThrow(() -> new NotFoundException("Subrace with id " + id + " was not found"));
         }
         catch (PersistenceException e)
         {
@@ -129,7 +129,7 @@ public class SubraceDAO implements IReferenceDAO<Subrace>
                     .setParameter("name", name)
                     .getResultStream()
                     .findFirst()
-                    .orElseThrow(() -> new EntityNotFoundException("Subrace with name \"" + name + "\" was not found"));
+                    .orElseThrow(() -> new NotFoundException("Subrace with name \"" + name + "\" was not found"));
         }
         catch (PersistenceException e)
         {
@@ -157,7 +157,7 @@ public class SubraceDAO implements IReferenceDAO<Subrace>
                                 LEFT JOIN FETCH r.languages
                                 LEFT JOIN FETCH r.traits
                                 LEFT JOIN FETCH s.traits
-                                WHERE LOWER(r.name) IN :names
+                                WHERE LOWER(s.name) IN :names
                                 """, Subrace.class)
                         .setParameter("names", keys)
                         .getResultList();

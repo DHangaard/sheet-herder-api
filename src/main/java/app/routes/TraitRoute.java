@@ -20,11 +20,11 @@ public class TraitRoute
     {
         return () ->
         {
-            path("/traits", () ->
+            path("traits", () ->
             {
                 get(traitController::getAll, Role.ANYONE);
-                get("/id/{id}", traitController::getById, Role.ANYONE);
-                get("/name/{name}", traitController::getByName, Role.ANYONE);
+                get("{id}", traitController::getById, Role.ANYONE);
+                get("name/{name}", traitController::getByName, Role.ANYONE);
             });
         };
     }

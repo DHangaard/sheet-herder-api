@@ -57,7 +57,7 @@ public class RaceDAO implements IReferenceDAO<Race>
                     .setParameter("id", id)
                     .getResultStream()
                     .findFirst()
-                    .orElseThrow(() -> new EntityNotFoundException("Race with id " + id + " was not found"));
+                    .orElseThrow(() -> new NotFoundException("Race with id " + id + " was not found"));
         }
         catch (PersistenceException e)
         {
@@ -124,7 +124,7 @@ public class RaceDAO implements IReferenceDAO<Race>
                     .setParameter("name", name)
                     .getResultStream()
                     .findFirst()
-                    .orElseThrow(() -> new EntityNotFoundException("Race with name \"" + name + "\" was not found"));
+                    .orElseThrow(() -> new NotFoundException("Race with name \"" + name + "\" was not found"));
         }
         catch (PersistenceException e)
         {

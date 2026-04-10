@@ -5,7 +5,7 @@ import app.exceptions.ForbiddenException;
 import app.exceptions.TokenVerificationException;
 import app.exceptions.UnauthorizedException;
 import app.security.dtos.LoginRequestDTO;
-import app.security.dtos.LoginResponseDTO;
+import app.security.dtos.LoginDTO;
 import app.security.dtos.RegisterRequestDTO;
 import app.security.dtos.UserSecurityDTO;
 import app.security.services.ISecurityService;
@@ -31,7 +31,7 @@ public class SecurityController implements ISecurityController
     {
         LoginRequestDTO request = ctx.bodyAsClass(LoginRequestDTO.class);
         String token = securityService.login(request);
-        ctx.status(HttpStatus.OK).json(new LoginResponseDTO(token));
+        ctx.status(HttpStatus.OK).json(new LoginDTO(token));
     }
 
     @Override

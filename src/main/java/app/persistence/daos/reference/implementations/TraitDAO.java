@@ -118,7 +118,7 @@ public class TraitDAO implements IReferenceDAO<Trait>
                     .setParameter("name", name)
                     .getResultStream()
                     .findFirst()
-                    .orElseThrow(() -> new EntityNotFoundException("Trait with name \"" + name + "\" was not found"));
+                    .orElseThrow(() -> new NotFoundException("Trait with name \"" + name + "\" was not found"));
         }
         catch (PersistenceException e)
         {
