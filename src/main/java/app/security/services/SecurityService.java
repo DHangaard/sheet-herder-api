@@ -56,6 +56,7 @@ public class SecurityService implements ISecurityService
             throw new UnauthorizedException("Invalid credentials");
         }
 
+        rehashIfNeeded(user, request.password());
         String token = JWTUtil.createToken(user.getId(), user.getUsername(), user.getRoles());
         log.info("User logged in: {}", user.getEmail());
         return token;
@@ -74,5 +75,15 @@ public class SecurityService implements ISecurityService
                 {
                     throw new ConflictException("The chosen username is not available: " + username);
                 });
+    }
+
+    private void rehashIfNeeded(User user, String plainPassword)
+    {
+        if (PasswordUtil.needsRehash(user.getHashedPassword()))
+        {
+            user.setHashedPassword(PasswordUtil.hashPassword(plainPassword));
+            userDAO.update(user);
+            log.warn("Password rehashed for user: {}", user.getEmail());
+        }
     }
 }
