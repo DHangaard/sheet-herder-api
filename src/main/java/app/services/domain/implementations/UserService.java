@@ -46,7 +46,6 @@ public class UserService implements IUserService
     public Long delete(User user, Long id)
     {
         Validator.validId(id);
-        userDAO.getById(id); // throws NotFoundException if not found
         validateOwnership(user, id);
         return userDAO.delete(id);
     }

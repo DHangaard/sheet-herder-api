@@ -21,6 +21,8 @@ public class TestPopulator
     private final ICharacterSheetDAO characterSheetDAO;
     private final Map<String, IEntity> seeded;
 
+    private static final int TEST_BCRYPT_COST = 4;
+
     public TestPopulator(EntityManagerFactory emf)
     {
         this.userDAO = new UserDAO(emf);
@@ -41,9 +43,9 @@ public class TestPopulator
 
     private void populateUsers()
     {
-        User john = new User("john@test.com", "john", PasswordUtil.hashPassword("Password_1", 4));
-        User morten = new User("morten@test.com", "morten", PasswordUtil.hashPassword("Password_2", 4));
-        User gary = new User("gary@test.com", "gary", PasswordUtil.hashPassword("Password_3", 4));
+        User john = new User("john@test.com", "john", PasswordUtil.hashPassword("Password_1", TEST_BCRYPT_COST));
+        User morten = new User("morten@test.com", "morten", PasswordUtil.hashPassword("Password_2", TEST_BCRYPT_COST));
+        User gary = new User("gary@test.com", "gary", PasswordUtil.hashPassword("Password_3", TEST_BCRYPT_COST));
 
         userDAO.create(john);
         userDAO.create(morten);
