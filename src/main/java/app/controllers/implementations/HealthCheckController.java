@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class HealthCheckController implements IHealthCheckController
 {
-    EntityManagerFactory emf;
+    private final EntityManagerFactory emf;
 
     public HealthCheckController(EntityManagerFactory emf)
     {
