@@ -12,7 +12,9 @@ public final class PasswordUtil
     private static final int BCRYPT_COST = 12;
     private static final String SHA_ALGORITHM = "SHA-256";
 
-    private PasswordUtil() {}
+    private PasswordUtil()
+    {
+    }
 
     public static String hashPassword(String plainPassword)
     {

@@ -10,9 +10,9 @@ import io.javalin.http.HttpStatus;
 
 public class RaceController implements IReferenceController
 {
-    private final IReferenceDataService<DNDRaceDetailDTO, RaceDTO>  raceService;
+    private final IReferenceDataService<DNDRaceDetailDTO, RaceDTO> raceService;
 
-    public RaceController(IReferenceDataService<DNDRaceDetailDTO, RaceDTO>  raceService)
+    public RaceController(IReferenceDataService<DNDRaceDetailDTO, RaceDTO> raceService)
     {
         this.raceService = raceService;
     }

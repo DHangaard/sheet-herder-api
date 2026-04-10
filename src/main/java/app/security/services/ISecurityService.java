@@ -7,5 +7,6 @@ import app.security.dtos.UserSecurityDTO;
 public interface ISecurityService
 {
     UserSecurityDTO register(RegisterRequestDTO request);
+
     String login(LoginRequestDTO request);
 }

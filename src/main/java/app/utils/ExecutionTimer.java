@@ -8,7 +8,9 @@ public final class ExecutionTimer
     private static Long start;
     private static long lastSplit;
 
-    private ExecutionTimer() {}
+    private ExecutionTimer()
+    {
+    }
 
     public static void start()
     {
@@ -44,7 +46,7 @@ public final class ExecutionTimer
 
         return String.format("%02d:%02d.%02d", minutes, seconds, hundredths);
     }
-    
+
     private static void validateStartTime()
     {
         if (start == null)

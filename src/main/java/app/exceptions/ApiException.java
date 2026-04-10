@@ -1,9 +1,11 @@
 package app.exceptions;
 
-public class ApiException extends RuntimeException {
+public class ApiException extends RuntimeException
+{
     private int code;
 
-    public ApiException(int code, String message){
+    public ApiException(int code, String message)
+    {
         super(message);
         this.code = code;
     }
@@ -14,7 +16,8 @@ public class ApiException extends RuntimeException {
         this.code = code;
     }
 
-    public int getCode(){
+    public int getCode()
+    {
         return code;
     }
 }

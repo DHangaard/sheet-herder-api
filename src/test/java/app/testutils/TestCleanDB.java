@@ -6,7 +6,9 @@ import jakarta.persistence.PersistenceException;
 
 public class TestCleanDB
 {
-    private TestCleanDB() {}
+    private TestCleanDB()
+    {
+    }
 
     public static void truncateTables(EntityManagerFactory emf)
     {
@@ -17,26 +19,26 @@ public class TestCleanDB
         {
             em.getTransaction().begin();
             em.createNativeQuery("""
-                TRUNCATE TABLE
-                    character_languages,
-                    character_ability_scores,
-                    character_notes,
-                    character_sheet,
-                    user_roles,
-                    users,
-                    trait_descriptions,
-                    trait,
-                    subrace_traits,
-                    subrace_ability_bonuses,
-                    subrace,
-                    race_traits,
-                    race_languages,
-                    race_ability_bonuses,
-                    race,
-                    language_typical_speakers,
-                    language
-                RESTART IDENTITY CASCADE
-            """).executeUpdate();
+                        TRUNCATE TABLE
+                            character_languages,
+                            character_ability_scores,
+                            character_notes,
+                            character_sheet,
+                            user_roles,
+                            users,
+                            trait_descriptions,
+                            trait,
+                            subrace_traits,
+                            subrace_ability_bonuses,
+                            subrace,
+                            race_traits,
+                            race_languages,
+                            race_ability_bonuses,
+                            race,
+                            language_typical_speakers,
+                            language
+                        RESTART IDENTITY CASCADE
+                    """).executeUpdate();
             em.getTransaction().commit();
         }
         catch (PersistenceException e)
