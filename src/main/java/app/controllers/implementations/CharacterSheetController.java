@@ -5,6 +5,7 @@ import app.controllers.interfaces.ICharacterSheetController;
 import app.dtos.domain.CharacterSheetDTO;
 import app.dtos.domain.CreateCharacterSheetDTO;
 import app.dtos.domain.UpdateCharacterSheetDTO;
+import app.exceptions.NotFoundException;
 import app.exceptions.UnauthorizedException;
 import app.persistence.entities.domain.User;
 import app.security.dtos.UserSecurityDTO;
@@ -79,6 +80,13 @@ public class CharacterSheetController implements ICharacterSheetController
         {
             throw new UnauthorizedException("No authenticated user on request");
         }
-        return userService.getById(userSecurityDTO.id());
+        try
+        {
+            return userService.getById(userSecurityDTO.id());
+        }
+        catch (NotFoundException e)
+        {
+            throw new UnauthorizedException("Session is no longer valid", e);
+        }
     }
 }
