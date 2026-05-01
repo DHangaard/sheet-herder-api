@@ -1,0 +1,231 @@
+@url = https://sheet-herder-api.dhangaard.dk/api/v1
+
+@ownerId = 4
+@tokenOwner = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJBcmFnb3JuIiwicm9sZXMiOlsiVVNFUiJdLCJpc3MiOiJESGFuZ2FhcmQiLCJpZCI6NCwiZXhwIjoxNzc2MTUzNTg4LCJpYXQiOjE3NzYxNTE3ODh9.3-AxhVLVAe33sYB9XylJn6wGKGr4f9uOWIcrvORr9kw
+
+@intruderId = 5
+@tokenIntruder = eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJTYXVyb24iLCJyb2xlcyI6WyJVU0VSIl0sImlzcyI6IkRIYW5nYWFyZCIsImlkIjo1LCJleHAiOjE3NzYxNTM2MzYsImlhdCI6MTc3NjE1MTgzNn0.C7IeLNP9haUu4viEGlRibKzKJhcQqzNVPqWaehjQ48s
+
+@characterId = 4
+@secondCharacterId = 5
+
+@intruderCharacterId = REPLACE_AFTER_CREATE
+@intruderSecondCharacterId = REPLACE_AFTER_CREATE
+
+
+
+### SETUP — Run these before the presentation
+
+### 1. Register Owner — copy id into @ownerId
+POST {{url}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "aragorn@gondor.com",
+  "username": "Aragorn",
+  "password": "P4sswo8d?"
+}
+
+### 2. Login Owner — copy token into @tokenOwner
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "aragorn@gondor.com",
+  "password": "P4sswo8d?"
+}
+
+### 3. Register Intruder — copy id into @intruderId
+POST {{url}}/auth/register
+Content-Type: application/json
+
+{
+  "email": "sauron@mordor.com",
+  "username": "Sauron",
+  "password": "P4sswo8d!"
+}
+
+### 4. Login Intruder — copy token into @tokenIntruder
+POST {{url}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "sauron@mordor.com",
+  "password": "P4sswo8d!"
+}
+
+
+
+### PRESENTATION — User story 2 flow
+
+### 5. CREATE Legolas — copy id into @characterId (expect 201)
+POST {{url}}/character-sheets
+Content-Type: application/json
+Authorization: Bearer {{tokenOwner}}
+
+{
+  "name": "Legolas",
+  "raceId": 7,
+  "subraceId": 2,
+  "languageIds": [8, 11],
+  "abilityScores": {
+    "STR": 10,
+    "DEX": 18,
+    "CON": 12,
+    "INT": 13,
+    "WIS": 14,
+    "CHA": 12
+  }
+}
+
+### 6. CREATE Gimli — copy id into @secondCharacterId (expect 201)
+POST {{url}}/character-sheets
+Content-Type: application/json
+Authorization: Bearer {{tokenOwner}}
+
+{
+  "name": "Gimli",
+  "raceId": 3,
+  "subraceId": null,
+  "languageIds": [1, 8],
+  "abilityScores": {
+    "STR": 18,
+    "DEX": 10,
+    "CON": 18,
+    "INT": 10,
+    "WIS": 12,
+    "CHA": 8
+  }
+}
+
+### 7. CREATE duplicate name (expect 409)
+POST {{url}}/character-sheets
+Content-Type: application/json
+Authorization: Bearer {{tokenOwner}}
+
+{
+  "name": "Legolas",
+  "raceId": 1,
+  "subraceId": null,
+  "languageIds": [1],
+  "abilityScores": {
+    "STR": 10,
+    "DEX": 10,
+    "CON": 10,
+    "INT": 10,
+    "WIS": 10,
+    "CHA": 10
+  }
+}
+
+### 8. UPDATE Legolas — notes only (expect 200)
+PUT {{url}}/character-sheets/{{characterId}}
+Content-Type: application/json
+Authorization: Bearer {{tokenOwner}}
+
+{
+  "notes": {
+    "Session 1": "The fellowship was formed in Rivendell."
+  }
+}
+
+### 9. UPDATE Gimli to existing name (expect 409)
+PUT {{url}}/character-sheets/{{secondCharacterId}}
+Content-Type: application/json
+Authorization: Bearer {{tokenOwner}}
+
+{
+  "name": "Legolas"
+}
+
+### 10. DELETE — Intruder tries to delete Owner's character (expect 403)
+DELETE {{url}}/character-sheets/{{characterId}}
+Authorization: Bearer {{tokenIntruder}}
+
+### 11. DELETE Legolas (expect 204)
+DELETE {{url}}/character-sheets/{{characterId}}
+Authorization: Bearer {{tokenOwner}}
+
+
+
+### FALLBACK — Sad paths
+
+### 12. GET with invalid id format (expect 400)
+GET {{url}}/character-sheets/abc
+Authorization: Bearer {{tokenOwner}}
+
+### 13. GET nonexistent character (expect 404)
+GET {{url}}/character-sheets/999
+Authorization: Bearer {{tokenOwner}}
+
+### 14. CREATE Intruder's character  — copy id into @intruderCharacterId (expect 201)
+POST {{url}}/character-sheets
+Content-Type: application/json
+Authorization: Bearer {{tokenIntruder}}
+
+{
+  "name": "Dark Lord",
+  "raceId": 1,
+  "subraceId": null,
+  "languageIds": [1],
+  "abilityScores": {
+    "STR": 20,
+    "DEX": 10,
+    "CON": 20,
+    "INT": 18,
+    "WIS": 15,
+    "CHA": 10
+  }
+}
+
+### 15. CREATE Intruder's second character, identical to primary users character  — copy id into @intruderSecondaryCharacterId (expect 201)
+POST {{url}}/character-sheets
+Content-Type: application/json
+Authorization: Bearer {{tokenIntruder}}
+
+{
+  "name": "Legolas",
+  "raceId": 1,
+  "subraceId": null,
+  "languageIds": [1],
+  "abilityScores": {
+    "STR": 10,
+    "DEX": 10,
+    "CON": 10,
+    "INT": 10,
+    "WIS": 10,
+    "CHA": 10
+  }
+}
+
+### 16. Owner tries to delete Intruder's character (expect 403)
+DELETE {{url}}/character-sheets/{{intruderCharacterId}}
+Authorization: Bearer {{tokenOwner}}
+
+
+
+### CLEANUP — Run after each test run
+
+### 17. Delete Gimli
+DELETE {{url}}/character-sheets/{{secondCharacterId}}
+Authorization: Bearer {{tokenOwner}}
+
+### 18. Delete Owners Legolas (if not already deleted)
+DELETE {{url}}/character-sheets/{{characterId}}
+Authorization: Bearer {{tokenOwner}}
+
+### 19. Delete Owner
+DELETE {{url}}/users/{{ownerId}}
+Authorization: Bearer {{tokenOwner}}
+
+### 20. Delete Dark Lord
+DELETE {{url}}/character-sheets/{{intruderCharacterId}}
+Authorization: Bearer {{tokenIntruder}}
+
+### 21. Delete Intruders Legolas
+DELETE {{url}}/character-sheets/{{intruderCharacterId}}
+Authorization: Bearer {{tokenIntruder}}
+
+### 22. Delete Intruder
+DELETE {{url}}/users/{{intruderId}}
+Authorization: Bearer {{tokenIntruder}}

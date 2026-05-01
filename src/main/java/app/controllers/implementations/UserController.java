@@ -4,6 +4,7 @@ import app.controllers.ControllerConstants;
 import app.controllers.interfaces.IUserController;
 import app.dtos.domain.UpdateUserDTO;
 import app.dtos.domain.UserDTO;
+import app.exceptions.NotFoundException;
 import app.exceptions.UnauthorizedException;
 import app.persistence.entities.domain.User;
 import app.security.dtos.UserSecurityDTO;
@@ -47,6 +48,13 @@ public class UserController implements IUserController
         {
             throw new UnauthorizedException("No authenticated user on request");
         }
-        return userService.getById(userSecurityDTO.id());
+        try
+        {
+            return userService.getById(userSecurityDTO.id());
+        }
+        catch (NotFoundException e)
+        {
+            throw new UnauthorizedException("Session is no longer valid", e);
+        }
     }
 }
