@@ -40,7 +40,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/sheet-herder:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/sheet-herder-api:latest
 
       - name: Trigger Watchtower webhook
         env:
