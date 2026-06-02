@@ -19,6 +19,7 @@ public class UserRoute
     {
         return () -> path("users", () ->
         {
+            get("{id}", userController::getById, Role.USER);
             put("{id}", userController::update, Role.USER);
             delete("{id}", userController::delete, Role.USER);
         });

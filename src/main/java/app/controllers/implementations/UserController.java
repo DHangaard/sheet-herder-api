@@ -23,6 +23,15 @@ public class UserController implements IUserController
     }
 
     @Override
+    public void getById(Context ctx)
+    {
+        User user = resolveUser(ctx);
+        Long id = Long.parseLong(ctx.pathParam("id"));
+        UserDTO userDTO = userService.getById(user, id);
+        ctx.status(HttpStatus.OK).json(userDTO);
+    }
+
+    @Override
     public void update(Context ctx)
     {
         User user = resolveUser(ctx);

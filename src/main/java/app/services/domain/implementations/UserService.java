@@ -28,6 +28,15 @@ public class UserService implements IUserService
     }
 
     @Override
+    public UserDTO getById(User user, Long id)
+    {
+        Validator.validId(id);
+        validateOwnership(user, id);
+        User foundUser = userDAO.getById(id);
+        return DTOMapper.userToUserDTO(foundUser);
+    }
+
+    @Override
     public UserDTO update(User user, Long id, UpdateUserDTO dto)
     {
         Validator.notNull(dto);

@@ -7,6 +7,7 @@ import app.persistence.entities.domain.User;
 public interface IUserService
 {
     User getById(Long id);
+    UserDTO getById(User user, Long id);
     UserDTO update(User user, Long id, UpdateUserDTO dto);
     Long delete(User user, Long id);
 }
